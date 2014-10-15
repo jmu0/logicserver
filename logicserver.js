@@ -1,7 +1,7 @@
 /*global Home: true */
 var loader = require('./modules/loader.js');
-var rootpath = '/home/jos/nodejs/logicserver/';
-Home = {};
+var rootpath = '/var/local/node/logicserver/';
+Home = { rootpath:rootpath };
 loader.load(rootpath + 'modules/', Home, function(){
     console.log(Home);
 });

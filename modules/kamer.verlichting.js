@@ -11,6 +11,9 @@ module.exports = {
         },
         dim: function(dim){
             Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+dim);
+        },
+        set: function(value){
+            Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+value);
         }
     },
     plafond2: {
@@ -24,6 +27,9 @@ module.exports = {
         },
         dim: function(dim){
             Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+dim);
+        },
+        set: function(value){
+            Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+value);
         }
     },
     spot1: {
@@ -37,6 +43,9 @@ module.exports = {
         },
         dim: function(dim){
             Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+dim);
+        },
+        set: function(value){
+            Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+value);
         }
     },
     staand: {
@@ -50,6 +59,9 @@ module.exports = {
         },
         dim: function(dim){
             Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+dim);
+        },
+        set: function(value){
+            Home.ioclient.write('setcontrol '+this.device+' '+this.control+','+value);
         }
     }
 };
