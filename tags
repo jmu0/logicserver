@@ -1,0 +1,29 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.8	//
+checkinterval	modules/ioclient.js	/^var checkinterval;$/;"	v
+clientname	modules/ioclient.js	/^var clientname = 'logic';$/;"	v
+connectServer	modules/ioclient.js	/^function connectServer() {$/;"	f
+doCommand	modules/ioclient.js	/^function doCommand(command) {$/;"	f
+fs	modules/loader.js	/^var fs = require('fs');$/;"	v
+getEventsForDevice	modules/oud.devices.js	/^function getEventsForDevice(device) {$/;"	f
+loader	logicserver.js	/^var loader = require('.\/modules\/loader.js');$/;"	v
+module.exports.arduino01	modules/oud.devices.js	/^    arduino01: {$/;"	p
+module.exports.beweging	modules/kamer.sensors.js	/^    beweging: function() {$/;"	m
+module.exports.licht	modules/kamer.sensors.js	/^    licht: function() {$/;"	m
+module.exports.load	modules/loader.js	/^    load: function(path, object, callback) {$/;"	m
+module.exports.plafond1	modules/kamer.verlichting.js	/^    plafond1: {$/;"	p
+module.exports.radiator1	modules/kamer.verwarming.js	/^    radiator1: {$/;"	p
+module.exports.temperatuur	modules/kamer.sensors.js	/^    temperatuur: function() {$/;"	m
+module.exports.write	modules/ioclient.js	/^    write: function(data) {$/;"	m
+net	modules/ioclient.js	/^var net = require('net');$/;"	v
+rootpath	logicserver.js	/^var rootpath = '\/home\/jos\/nodejs\/logicserver\/';$/;"	v
+server	modules/ioclient.js	/^var server;$/;"	v
+serverData	modules/ioclient.js	/^function serverData(data) {$/;"	f
+serverError	modules/ioclient.js	/^function serverError(error) {$/;"	f
+servername	modules/ioclient.js	/^var servername = 'domotica';$/;"	v
+serverport	modules/ioclient.js	/^var serverport = 9999;$/;"	v
+setDefaults	modules/oud.devices.js	/^function setDefaults(device) {$/;"	f
