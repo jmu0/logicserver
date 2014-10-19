@@ -34,7 +34,11 @@ function parseUrl(url) {
         q.command=split[1];
         q.value="";
         for(i=2; i<split.length; i++){
-            q.value += split[i]+"/";
+            q.value += split[i];
+            if (i<split.length-1) {q.value += "/"; }
+        }
+        if (split[1]==='file') { 
+            q.file=q.value;
         }
     }
 
@@ -43,12 +47,25 @@ function parseUrl(url) {
 }
 
 http.createServer(function(req,res) {
-    res.writeHead(200, { 'Content-Type': 'text/html'});
     var query=parseUrl(req.url);
+    console.log(query);
     if (query.command==='file') {
         var path = Home.rootpath+"ui/"+query.file;
         fs.exists(path, function(exists) {
             if (exists){
+                var ext = query.file.split('.').pop();
+                console.log(ext);
+                switch (ext){
+                    case 'js':
+                        res.writeHead(200, { 'Content-Type': 'text/javascript'});
+                        break;
+                    case 'css':
+                        res.writeHead(200, { 'Content-Type': 'text/css'});
+                        break;
+                    default: 
+                        res.writeHead(200, { 'Content-Type': 'text/html'});
+                        break;
+                }
                 var fileStream = fs.createReadStream(path);
                 fileStream.on('data', function (data) {
                     res.write(data);
@@ -57,16 +74,24 @@ http.createServer(function(req,res) {
                     res.end();
                 });
             } else {
+                res.writeHead(200, { 'Content-Type': 'text/html'});
                 res.end(path+' bestaat niet');
             }
         });
     }else if (query.command === 'setcontrol'){
         Home.ioclient.write('setcontrol ' + query.device + " " + query.value);
+        res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end();
     } else if (query.command === 'device'){
         Home[query.device[0]][query.device[1]][query.device[2]].set(query.value);
+        res.writeHead(200, { 'Content-Type': 'text/html'});
+        res.end();
+    } else if (query.command === 'devices') {
+        res.writeHead(200, { 'Content-Type': 'text/html'});
+        res.write(JSON.stringify(Home));
         res.end();
     }else{
+        res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end(JSON.stringify(query));
     }
 }).listen(8888);
