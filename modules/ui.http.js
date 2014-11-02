@@ -1,3 +1,4 @@
+/*jslint todo: true */
 /*global Home */
 var http = require('http');
 var fs = require('fs');
@@ -22,6 +23,9 @@ function parseUrl(url) {
             q.device=split[2];
             q.value=split[3];
         }
+    } else if (split[1] === 'state') {
+        q.command='state';
+        q.value=split[2];
     } else if (split[1]==='device'){
         if (split.lehgth<4) {
             q=false;
@@ -48,13 +52,12 @@ function parseUrl(url) {
 
 http.createServer(function(req,res) {
     var query=parseUrl(req.url);
-    console.log(query);
+    console.log('http: ' + JSON.stringify(query));
     if (query.command==='file') {
         var path = Home.rootpath+"ui/"+query.file;
         fs.exists(path, function(exists) {
             if (exists){
                 var ext = query.file.split('.').pop();
-                console.log(ext);
                 switch (ext){
                     case 'js':
                         res.writeHead(200, { 'Content-Type': 'text/javascript'});
@@ -78,8 +81,14 @@ http.createServer(function(req,res) {
                 res.end(path+' bestaat niet');
             }
         });
+    //TODO: de volgende commando's via websocket
     }else if (query.command === 'setcontrol'){
         Home.ioclient.write('setcontrol ' + query.device + " " + query.value);
+        res.writeHead(200, { 'Content-Type': 'text/html'});
+        res.end();
+
+    } else if (query.command ==='state') {
+        Home.state[query.value]();
         res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end();
     } else if (query.command === 'device'){
@@ -95,6 +104,7 @@ http.createServer(function(req,res) {
         res.end(JSON.stringify(query));
     }
 }).listen(8888);
+console.log('http server listening on port 8888');
 /* IPTABLES:
  * sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8888
  */

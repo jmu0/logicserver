@@ -19,17 +19,15 @@
             <nav>
                 <button class='toggle visible-sm'><i class='fa fa-bars'></i></button>
                 <ul class='hidden-sm'>
-                    <li><a href='#' onclick='m.ui.show("huis")' class='een'><i class='fa fa-home'></i>Huis</a></li>
-                    <li><a href='#' onclick='m.ui.show("apparaten")' class='een'><i class='fa fa-home'></i>Apparaten</a></li>
-                    <li><a href='#' onclick='m.ui.show("events")' class='een'><i class='fa fa-home'></i>Gebeurtenissen</a></li>
-                    <li><a href='#' onclick='m.ui.show("")' class='een'><i class='fa fa-home'></i>Regelkringen</a></li>
-                    <li><a href='#' onclick='m.ui.show("")' class='een'><i class='fa fa-home'></i>Toestand</a></li>
-                    <li><a href='#' onclick='m.ui.show("")' class='een'><i class='fa fa-home'></i>Aktiviteiten</a></li>
+                    <li><a href='#' onclick='m.ui.show("home")' class='een'><i class='fa fa-home'></i>Home</a></li>
+                    <li><a href='#' onclick='m.ui.show("devices")' class='een'><i class='fa fa-home'></i>Devices</a></li>
+                    <li><a href='#' onclick='m.ui.show("controllers")' class='een'><i class='fa fa-home'></i>Controllers</a></li>
+                    <li><a href='#' onclick='m.ui.show("state")' class='een'><i class='fa fa-home'></i>State</a></li>
                 </ul>
             </nav>
         </header>
         <div class='wrapper'>
-            <div class='content page huis'>
+            <div class='content page home'>
                 <h2>Huis</h2>
                 status weergeven<br><br>
 
@@ -43,14 +41,19 @@
                 aktiviteiten planner (opstaan,werken,tussendemiddag,thuiskomen,avond,slapen);<br>
 
             </div><!--huis-->
-            <div class='content page full-width apparaten'>
-                <h2>Apparaten</h2>
+            <div class='content page full-width devices'>
+                <h2>Devices</h2>
+                <button onclick="Home.resetControls()">Reset</button>
                 <div id='apparaten'></div>
             </div><!--apparaten-->
-            <div class='content page scenes'>
-                <h2>Scenes</h2>
+            <div class='content page full-width controllers'>
+                <h2>Controllers</h2>
+                <div id='apparaten'></div>
+            </div><!--apparaten-->
+            <div class='content page full-width state'>
+                <h2>State</h2>
+                <div id='state'></div>
             </div><!--scenes-->
-
         </div><!--content wrapper-->
         <footer>
         </footer>
@@ -59,7 +62,7 @@
     <script src='file/js/logicserver-ui.js'></script>
     <script>
         $(function(){
-            Huis.init();
+            Home.init();
         });
     </script>
 </html>
