@@ -15,15 +15,18 @@ for (i=0; i < list.length; i++){
 module.exports = {
     list: list,
     save: function() {
-        var filename = 'data/devices.list.js';
-        var file = "module.exports = " + JSON.stringify(Home.devices.list);
-        fs.writeFile(filename, file, function(error) {
-            if (error) {
-                console.log("ERROR writing file: " + filename);
-            } else {
-                console.log('saved file: ' + filename);
-            }
-        });
+        clearTimeout(this.t);
+        this.t = setTimeout(function() {
+            var filename = Home.rootpath+'data/devices.list.js';
+            var file = "module.exports = " + JSON.stringify(Home.devices.list) + ";";
+            fs.writeFile(filename, file, function(error) {
+                if (error) {
+                    console.log("ERROR writing file: " + filename + ": " + JSON.stringify(error));
+                } else {
+                    console.log('saved file: ' + filename);
+                }
+            });
+        }, 5000);
     },
     update: function(iodevice, iocontrol, value) {
         console.log('updating: '+iodevice+ ' ' + iocontrol + " = " + value);
