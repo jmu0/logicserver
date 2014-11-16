@@ -4,6 +4,7 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" href="file/favicon.ico" type="image/vnd.microsoft.icon">
         <title>Domotica UI</title>
         <link rel="stylesheet" type="text/css" href="http://www.muysers.nl/ui/nieuw/includes/ui.css">
         <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -11,6 +12,11 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
+        <style>
+            button.vlcbutton, button,pcbutton {
+                width: 100px;
+            }
+        </style>
 
     </head>
     <body>
@@ -20,9 +26,9 @@
                 <button class='toggle visible-sm'><i class='fa fa-bars'></i></button>
                 <ul class='hidden-sm'>
                     <li><a href='#' onclick='m.ui.show("home")' class='een'><i class='fa fa-home'></i>Home</a></li>
-                    <li><a href='#' onclick='m.ui.show("devices")' class='een'><i class='fa fa-home'></i>Devices</a></li>
-                    <li><a href='#' onclick='m.ui.show("controllers")' class='een'><i class='fa fa-home'></i>Controllers</a></li>
-                    <li><a href='#' onclick='m.ui.show("state")' class='een'><i class='fa fa-home'></i>State</a></li>
+                    <li><a href='#' onclick='m.ui.show("devices")' class='een'><i class='fa fa-gear'></i>Devices</a></li>
+                    <li><a href='#' onclick='m.ui.show("controllers")' class='een'><i class='fa fa-tachometer'></i>Controllers</a></li>
+                    <li><a href='#' onclick='m.ui.show("state")' class='een'><i class='fa fa-check'></i>State</a></li>
                 </ul>
             </nav>
         </header>
@@ -43,12 +49,12 @@
             </div><!--huis-->
             <div class='content page full-width devices'>
                 <h2>Devices</h2>
-                <button onclick="Home.resetControls()">Reset</button>
-                <div id='apparaten'></div>
+                <button onclick="Home.resetControls()" class='pull-right' style='margin: -20px 5px 5px'>Reset</button>
+                <div id='devices'></div>
             </div><!--apparaten-->
             <div class='content page full-width controllers'>
                 <h2>Controllers</h2>
-                <div id='apparaten'></div>
+                <div id='controllers'></div>
             </div><!--apparaten-->
             <div class='content page full-width state'>
                 <h2>State</h2>

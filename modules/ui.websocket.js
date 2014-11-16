@@ -2,6 +2,7 @@
 /*global Home */
 var WebSocketServer = require('ws').Server;
 var socket = new WebSocketServer({port: 8080});
+//var util = require('util');
 console.log('websocket listening on port 8080');
 
 function sendHomeObject(ws) {
@@ -9,9 +10,11 @@ function sendHomeObject(ws) {
         "devices": Home.devices.list,
         "events": Home.events.list,
         "sensors": Home.sensors.list,
-        "state": Home.state.getList()
+        "state": Home.state.getList(),
+        "pc": Home.pc.list
     };
     ws.send(JSON.stringify(obj));
+    //ws.send(util.inspect(obj, { depth: null }));
 }
 
 function doCommand(command) {
@@ -22,6 +25,9 @@ function doCommand(command) {
         break;
         case 'state':
             Home.state[splitCommand[1]]();
+            break;
+        case 'pc':
+            Home.pc.doCommand(command);
             break;
         default: 
             console.log('unknown command: ' + command);

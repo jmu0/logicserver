@@ -28,6 +28,7 @@ var Home= {
         console.log("socketClose "+JSON.stringify(evt));
     },
     socketMessage: function(evt){
+        //DEBUG: 
         console.log("socketMessage: "+evt.data);
         var data = JSON.parse(evt.data);
         if (data.devices) {
@@ -39,18 +40,63 @@ var Home= {
         if (data.sensors) {
             Home.sensors = data.sensors;
         }
-        if (data.devices || data.events || data.sensors) {
+        if (data.pc) {
+            Home.pc = data.pc;
+        }
+        if (data.devices || data.events || data.sensors || data.pc) {
             Home.getDevices();
             Home.showDevices();
         }
         if (data.update) {
-            console.log('update: ' + JSON.stringify(data));
-            var n = $('[iodevice="' + data.update.iodevice + '"][iocontrol="'+data.update.iocontrol + '"]')[0];
-            var nm = $(n).get(0).nodeName;
-            if (nm === 'INPUT') {
-                $(n).val(data.update.value);
-            } else if (n==='SPAN'){
-                $(n).html(data.update.value);
+            if (data.update.hostname) {
+                var btn = $('button.pcbutton[hostname="'+data.update.hostname+'"]');
+                var vlcbtn = $('button.vlcbutton[hostname="'+data.update.hostname+'"]');
+                if (data.update.alive) {
+                    $(btn).html('Shutdown');
+                    $(btn).attr('alive','true');
+                    $(vlcbtn).removeAttr('disabled');
+                } else {
+                    $(btn).html('Wake');
+                    $(btn).attr('alive','false');
+                    $(vlcbtn).attr('disabled','disabled');
+                }
+                if (data.update.vlcAlive) {
+                    $(vlcbtn).html('Kill vlc');
+                    $(vlcbtn).attr('alive','true');
+                } else {
+                    $(vlcbtn).html('Start vlc');
+                    $(vlcbtn).attr('alive','false');
+                }
+            } else {
+                var n = $('[iodevice="' + data.update.iodevice + '"][iocontrol="'+data.update.iocontrol + '"]')[0];
+                if (n) {
+                    var nm = $(n).get(0).nodeName;
+                    var type = $(n).attr('type');
+                    var val;
+                    if (isNaN(parseInt(data.update.value,10))) {
+                        val = data.update.values[data.update.values.indexOf(data.update.value)];
+                    } else {
+                        val = data.update.values[data.update.values.indexOf(parseInt(data.update.value,10))];
+                    }
+                    var valIndex = data.update.values.indexOf(val);
+                    if (nm === 'INPUT') {
+                        if (type === 'checkbox') {
+                            if (valIndex === 0) {
+                                n.checked = false;
+                            } else {
+                                n.checked = true;
+                            }
+                        } else if (type === 'range') {
+                            $(n).val(valIndex);
+                        } else {
+                            $(n).val(val);
+                        }
+                    } else if (n==='SPAN'){
+                        $(n).html(data.update.value);
+                    }
+                } else {
+                    console.log('Not found: ' + data.update.iodevice + ", " + data.update.iocontrol);
+                }
             }
         }
         if (data.state) {
@@ -81,14 +127,16 @@ var Home= {
             if (Home.rooms[dev.room][dev.type] === undefined) { Home.rooms[dev.room][dev.type] = {}; }
             Home.rooms[dev.room][dev.type][dev.name] = dev;
         }
+        for (i=0; i<Home.pc.length; i++){
+            dev=Home.pc[i];
+            if (Home.rooms[dev.room] === undefined) { Home.rooms[dev.room] = {}; }
+            if (Home.rooms[dev.room][dev.type] === undefined) { Home.rooms[dev.room][dev.type] = {}; }
+            Home.rooms[dev.room][dev.type][dev.hostname] = dev;
+        }
     },
     showDevices: function() {
-        var html = "";
-        var room;
-        var type;
-        var device; 
-        var dev;
-        html = '<br><table><tbody>';
+        var room, type, device, dev, val;
+        var html = '<br><table><tbody>';
         for (room in Home.rooms) {
             if (Home.rooms.hasOwnProperty(room)) {
                 html += "<tr><td class='kop1' colspan=2>"+room+"</td></tr>";
@@ -107,16 +155,60 @@ var Home= {
                                 } else if (dev.type === 'sensors') {
                                     html += "<tr>";
                                     html += "<td>"+dev.name+"</td>";
-                                    html += "<td><span iodevice='" + dev.iodevice + "' iocontrol='"+dev.iocontrol +"'>" + dev.value;
+                                    html += "<td><span iocontrol='"+dev.iocontrol+ "' iodevice='"+dev.iodevice+"'>";
                                     html += "</span></td>";
+                                    html += "</tr>";
+                                } else if (dev.type === 'pc') {
+                                    html += "<tr>";
+                                    html += "<td>"+dev.hostname+"</td>";
+                                    html += "<td>";
+                                    html += "<button class='pcbutton' onclick='Home.pcOnOff(this)' hostname='" + dev.hostname + "' alive='"+dev.alive + "'>";
+                                    if (dev.alive) { 
+                                        html += "Shutdown</button> "; 
+                                    } else {
+                                        html += "Wake</button> "; 
+                                    }
+                                    html += "<button class='vlcbutton' onclick='Home.vlcOnOff(this)' hostname='" + dev.hostname + "' alive='"+dev.vlcAlive + "' ";
+                                    if (dev.alive === false) { html += " disabled"; }
+                                    if (dev.vlcAlive) { 
+                                        html += ">Kill vlc</button> "; 
+                                    } else {
+                                        html += ">Start vlc</button> "; 
+                                    }
+                                    html += "</td>";
                                     html += "</tr>";
                                 } else {
                                     html += "<tr>";
                                     html += "<td>"+dev.name+"</td>";
-                                    html += "<td><input class='text' iodevice='"+dev.iodevice+"' iocontrol='"+dev.iocontrol+ "' ";
-                                    html += "onchange=\"Home.setcontrol('"+dev.iodevice+"','"+dev.iocontrol+"',this.value)\" ";
-                                    html += "value='"+dev.value+"'";
-                                    html += " /></td>";
+                                    if (dev.values.length === 2) {
+                                        html += "<td><input type='checkbox' iodevice='"+dev.iodevice+"' iocontrol='"+dev.iocontrol+ "' ";
+                                        html += "onchange=\"Home.setcontrol(this)\" ";
+                                        html += " values=" + JSON.stringify(dev.values) + " ";
+                                        val = dev.values.indexOf(dev.value);
+                                        if (isNaN(parseInt(dev.value,10)) === false && val === -1) { 
+                                            val = dev.values.indexOf(parseInt(dev.value,10));
+                                        }
+                                        if (val > 0) { html += "checked "; }
+                                        html += " /></td>";
+                                    } else if (dev.values.length > 2) {
+                                        html += "<td><input type='range' iodevice='"+dev.iodevice+"' iocontrol='"+dev.iocontrol+ "' ";
+                                        html += "onchange=\"Home.setcontrol(this)\" ";
+                                        html += "value='";
+                                        if (isNaN(parseInt(dev.value,10)) === true) {
+                                            html += dev.values.indexOf(dev.value);
+                                        } else {
+                                            html += dev.values.indexOf(parseInt(dev.value,10));
+                                        }
+                                        html += "' values='" + JSON.stringify(dev.values) + "' ";
+                                        html += "min=0 max=" + (dev.values.length - 1) + " />";
+                                        html += "";
+                                        html += "</td>";
+                                    } else {
+                                        html += "<td><input type='text' iodevice='"+dev.iodevice+"' iocontrol='"+dev.iocontrol+ "' ";
+                                        html += "onchange=\"Home.setcontrol(this)\" ";
+                                        html += "value='"+dev.value+"'";
+                                        html += " /></td>";
+                                    }
                                     html += "</tr>";
                                 }
                             }
@@ -125,7 +217,7 @@ var Home= {
                 }
             }
         }
-        $('div#apparaten').html(html);
+        $('div#devices').html(html);
     },
     showStates: function() {
         var html = '<table class="striped" width="100%"><tbody>';
@@ -144,8 +236,28 @@ var Home= {
     setstate: function(state) {
         Home.socket.send('state ' + state);
     },
-    setcontrol: function(iodevice, iocontrol, value) {
-        Home.socket.send('setcontrol ' + iodevice + " " + iocontrol + "=" + value);
+    setcontrol: function(input) {
+        var value= $(input).val();
+        var values = $(input).attr('values');
+        values = JSON.parse(values);
+        var iodevice = $(input).attr('iodevice');
+        var iocontrol = $(input).attr('iocontrol');
+        var cmd = 'setcontrol ';
+        switch ($(input).attr('type')) {
+            case 'checkbox':
+                if ($(input).is(':checked')) {
+                    value = values[1];
+                } else {
+                    value = values[0];
+                }
+                break;
+            case 'range':
+                value  = values[value];
+                break;
+        }
+        cmd += iodevice + " " + iocontrol + "=" + value;
+        console.log(cmd);
+        Home.socket.send(cmd);
     },
     resetControls: function() {
         var i,dev;
@@ -153,6 +265,39 @@ var Home= {
             dev=Home.devices[i];
             Home.setcontrol(dev.iodevice,dev.iocontrol,dev.value);
         }
+    },
+    pcOnOff: function(btn) {
+        var hostname = $(btn).attr('hostname');
+        var alive = $(btn).attr('alive');
+        var cmd = "pc " + hostname;
+        var vlcbtn = $('button.vlcbutton[hostname="'+hostname+'"]');
+        if (alive === 'true') {
+            cmd += " off";
+            $(btn).html('Wake');
+            $(btn).attr('alive','false');
+            $(vlcbtn).attr('disabled','disabled');
+        } else {
+            cmd += " on";
+            $(btn).html('Shutdown');
+            $(btn).attr('alive','true');
+            $(vlcbtn).removeAttr('disabled');
+        }
+        Home.socket.send(cmd);
+    },
+    vlcOnOff: function(btn) {
+        var hostname = $(btn).attr('hostname');
+        var alive = $(btn).attr('alive');
+        var cmd = "pc " + hostname + " vlc ";
+        if (alive === 'true') {
+            cmd += "stop";
+            $(btn).html('Start vlc');
+            $(btn).attr('alive','false');
+        } else {
+            cmd += "start";
+            $(btn).html('Kill vlc');
+            $(btn).attr('alive','true');
+        }
+        Home.socket.send(cmd);
     }
 };
 

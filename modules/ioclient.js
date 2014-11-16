@@ -9,29 +9,52 @@ var checkinterval;
 
 function doCommand(command) {
     var events, recevent, device, i;
+    var iodevice,iocontrol,value;
     console.log("ioclient: " + command);
     command = command.split(' ');
-    //TODO: device betekende eerst bv. arduino01
     if (command.length > 1) {
-        var iodevice = command[1];
-        var iocontrol = command[2].split('=')[0];
-        var value = command[2].split('=')[1];
-        device = Home.devices.find({
-            iodevice: iodevice,
-            iocontrol: iocontrol
-        });
+        iodevice = command[1];
+        if (iodevice === 'pc') {
+            if (command[2]){
+                device = Home.pc.find(command[2]);
+                if (device) {
+                    if (command[3]) {
+                        if (command[3] === 'vlc' && command[4] !== undefined) {
+                            device.pongVlc(command[4]);
+                        } else {
+                            device.pong(command[3]);
+                        }
+                    }
+                }
+            }
+        } else {
+            if (command[2]) {
+                iocontrol = command[2].split('=')[0];
+                value = command[2].split('=')[1];
+                device = Home.devices.find({
+                    iodevice: iodevice,
+                    iocontrol: iocontrol
+                });
+            }
+        }
         if (device !== undefined) {
             if (command[0] === 'init') {
+                console.log('initialiseren: ' + iodevice);
+                //TODO: device betekende eerst bv. arduino01
+                /*
                 if (device.hasOwnProperty('init') === true){
                     device.init();
                 }
+                */
             } else if (command[0] === 'update') {
                 device.value = value;
                 var obj = {
                     update: device
                 };
                 Home.ui.websocket.broadcast(JSON.stringify(obj));
-                Home.devices.save();
+                if (iodevice !== 'pc') {
+                    Home.devices.save();
+                }
             } else if (command[0] === 'event') {
                 events = device.events();
                 recevent = command[2]+" "+command[3];

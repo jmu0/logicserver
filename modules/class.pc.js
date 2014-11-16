@@ -1,26 +1,8 @@
-var shell = { 
-    exec: require('child_process').exec,
-    callback: undefined,
-    cmd: function(cmd, callback){
-        console.log('SHELL: '+cmd);
-        shell.callback=callback;
-        shell.exec(cmd,function(error,stdout,stderr){
-            console.log("pc error: "+error);
-            console.log('pc stdout: ' +stdout);
-            console.log('pc stderro: '+stderr);
-            if (shell.callback !== undefined)
-                {   
-                    shell.callback(stdout); 
-                }   
-        }); 
-    },  
-    puts: function(error, stdout, stderr){
-        console.log("pc error: "+error);
-        console.log('pc stdout: ' +stdout);
-        console.log('pc stderro: '+stderr);
-        return stdout;
-    }   
-};
+/*global Home */
+var pingPcInterval  = 3000;
+var pingVlcInterval = 3000;
+var startPcTimeout  = 20000;
+var startVlcTimeout = 2000;
 
 function pc(props) {
     var pr;
@@ -30,25 +12,116 @@ function pc(props) {
         }
     }
 }
+var pcInterval,vlcInterval;
+var onValue = false; 
+var vlcOnValue = false;
+
 pc.prototype = {
-    wakeOnLan: function(){
-        //LET OP: op arch linux moet het pakket wol geinstalleerd zijn
-        //50:e5:49:be:e8:9e = htpc
-        //c8:60:00:84:f5:e2 = htpc2 
-        if (this.mac !== undefined){
-            shell.cmd('wol ' + this.mac);
+    on: function() {
+        onValue=true;
+        if (this.alive===false) {
+            Home.ioclient.write('pc ' + this.hostname + ' wake');
+            var dit = this;
+            setTimeout(function(){ 
+                pcInterval = setInterval(function() {
+                    dit.ping(dit.hostname);
+                }, pingPcInterval);
+                setTimeout(function() { dit.pingVlc(dit.hostname); },startVlcTimeout);
+            },startPcTimeout);
+        }
+    },
+    off: function() {
+        onValue=false;
+        clearInterval(pcInterval);
+        this.stopVlc();
+        this.alive=false;
+        this.shutdown();
+    },
+    ping: function(hostname) { //hostname required, in setinterval this=interval
+        if (hostname !== undefined) {
+            Home.ioclient.write('pc ' + hostname + ' ping');
         } else {
-            console.log("pc wakeonlan: geen mac adres gegeven");
+            console.log('ERROR: class pc, ping, geen hostname');
+        }
+    },
+    pong: function(value) {
+        if (Home.debug) { console.log('pc ' + this.hostname + ' pong: '+value); }
+        if (value==='alive') {
+            this.alive = true;
+        } else if (value==='dead'){
+            this.alive = false;
+        }
+    },
+    getStatus: function(){
+        var status = {
+        };
+        status.hostname = this.hostname;
+        if (pcInterval) {
+            status.on=true;
+        } else {
+            this.on=false;
+        }
+        status.alive=this.alive;
+        status.vlcAlive=this.vlcAlive;
+        return status;
+    },
+    startVlc: function() {
+        vlcOnValue = true; 
+        if (this.hostname !== undefined) {
+            Home.ioclient.write('pc ' + this.hostname + ' vlc start');
+            var dit = this;
+            setTimeout(function(){ 
+                vlcInterval = setInterval(function() {
+                    dit.pingVlc(dit.hostname);
+                }, pingVlcInterval);
+            },startVlcTimeout);
+        } else {
+            console.log('ERROR: class pc, start vlc, geen hostname');
+        }
+    },
+    stopVlc: function() {
+        vlcOnValue = false; 
+        if (this.hostname !== undefined) {
+            clearInterval(vlcInterval);
+            Home.ioclient.write('pc ' + this.hostname + ' vlc kill');
+            this.vlcAlive=false;
+        } else {
+            console.log('ERROR: class pc, stop vlc, geen hostname');
+        }
+    },
+    pingVlc: function(hostname) {
+        if (hostname !== undefined) {
+            Home.ioclient.write('pc ' + hostname + ' vlc ping');
+        } else {
+            console.log('ERROR: class vlc, ping, geen hostname');
+        }
+    },
+    pongVlc: function(value) {
+        if (value==='alive') {
+            this.vlcAlive=true;
+        } else if (value==='dead'){
+            this.vlcAlive = false;
+            /*
+            if (vlcOnValue=== true) {
+                clearInterval(vlcInterval);
+                this.startVlc();
+            }
+            */
+        }
+    },
+    wakeOnLan: function(){
+        if (this.hostname !== undefined) {
+            Home.ioclient.write('pc' + this.hostname + ' wake');
+        } else {
+            console.log('ERROR: class pc, wake, geen hostname');
         }
     },
     shutdown: function() {
-        console.log('shutdown');
+        if (this.hostname !== undefined) {
+            Home.ioclient.write('pc ' + this.hostname + ' shutdown');
+        } else {
+            console.log('ERROR: class pc, shutdown, geen hostname');
+        }
     },
-    ssh: function(command){
-        console.log(command);
-    },
-    test: function(wat) {
-        console.log('test: '+wat);
-    }
 };
 module.exports = pc;
