@@ -5,23 +5,17 @@ module.exports = [
         type: 'sensors',
         name: 'temperatuur',
         iodevice: 'arduino01',
-        iocontrol: 'an3',
-        ioconvert: 'temp'
+        iocontrol: 'an4',
+        ioconvert: 'tmp36',
+        value: -1
     },
     {
         room: 'kamer',
         type: 'sensors',
         name: 'licht',
         iodevice: 'arduino01',
-        iocontrol: 'an4',
-        ioconvert: 'licht'
-    },
-    {
-        room: 'kamer',
-        type: 'sensors',
-        name: 'beweging',
-        iodevice: 'arduino01',
         iocontrol: 'an5',
-        ioconvert: 'beweging'
+        ioconvert: 'licht',
+        value: -1
     }
 ];
