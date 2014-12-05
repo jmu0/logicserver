@@ -7,11 +7,12 @@ var servername = 'domotica';
 var serverport = 9999;
 var checkinterval;
 
-function doCommand(command) {
-    var events, recevent, device, i;
+function doCommand(cmd) {
+    //TODO: cleanup this mess
+    var events, recevent, device, i, obj;
     var iodevice,iocontrol,value;
-    console.log("ioclient: " + command);
-    command = command.split(' ');
+    if (Home.debug) { console.log("ioclient: " + cmd); }
+    var command = cmd.split(' ');
     if (command.length > 1) {
         iodevice = command[1];
         if (iodevice === 'pc') {
@@ -27,6 +28,11 @@ function doCommand(command) {
                     }
                 }
             }
+        } else if (iodevice.substr(0,1) === "{") { 
+            obj = JSON.parse(iodevice); 
+            iodevice = obj.name;
+            device = iodevice; 
+            value = obj.status;
         } else {
             if (command[2]) {
                 iocontrol = command[2].split('=')[0];
@@ -48,7 +54,7 @@ function doCommand(command) {
                 */
             } else if (command[0] === 'update') {
                 device.value = value;
-                var obj = {
+                obj = {
                     update: device
                 };
                 Home.ui.websocket.broadcast(JSON.stringify(obj));
@@ -65,6 +71,8 @@ function doCommand(command) {
                         break;
                     }
                 }
+            } else if (command[0] === 'returnstatus') {
+                Home.sensors.update(cmd.substr(12));
             }
         } else {
             console.log("device: '"+command[1] + "' unknown");
@@ -109,7 +117,7 @@ function connectServer() {
 
 module.exports = {
     write: function(data) {
-        console.log('ioclient:' + data);
+        if (Home.debug) { console.log('ioclient:' + data); }
         if (data.substr(data.length -1) !== "\n") { data += "\n"; }
         server.write(data);
     }

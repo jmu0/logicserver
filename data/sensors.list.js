@@ -6,8 +6,14 @@ module.exports = [
         name: 'temperatuur',
         iodevice: 'arduino01',
         iocontrol: 'an4',
-        ioconvert: 'tmp36',
-        value: -1
+        set: function(value) {
+            var refVoltage = 4750.0;
+            this.raw = value;
+            var voltage = (value * (refVoltage / 1024.0));
+            this.value = Math.round((voltage - 500.0) / 10.0);
+        },
+        value: undefined,
+        raw: undefined
     },
     {
         room: 'kamer',
@@ -15,7 +21,13 @@ module.exports = [
         name: 'licht',
         iodevice: 'arduino01',
         iocontrol: 'an5',
-        ioconvert: 'licht',
-        value: -1
+        set: function(value) {
+            var min = 0;
+            var max = 1024;
+            this.raw = value;
+            this.value = Math.round((value / (max - min)) * 100);
+        },
+        value: undefined,
+        raw: undefined
     }
 ];

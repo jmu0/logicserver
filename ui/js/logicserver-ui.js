@@ -72,13 +72,17 @@ var Home= {
                 if (n) {
                     var nm = $(n).get(0).nodeName;
                     var type = $(n).attr('type');
-                    var val;
+                    var val, valIndex;
                     if (isNaN(parseInt(data.update.value,10))) {
                         val = data.update.values[data.update.values.indexOf(data.update.value)];
                     } else {
-                        val = data.update.values[data.update.values.indexOf(parseInt(data.update.value,10))];
+                        if (data.update.values){
+                            val = data.update.values[data.update.values.indexOf(parseInt(data.update.value,10))];
+                            valIndex = data.update.values.indexOf(val);
+                        } else { 
+                            val = data.update.value;
+                        }
                     }
-                    var valIndex = data.update.values.indexOf(val);
                     if (nm === 'INPUT') {
                         if (type === 'checkbox') {
                             if (valIndex === 0) {
@@ -91,8 +95,8 @@ var Home= {
                         } else {
                             $(n).val(val);
                         }
-                    } else if (n==='SPAN'){
-                        $(n).html(data.update.value);
+                    } else if (nm === 'SPAN'){
+                        $(n).html(val);
                     }
                 } else {
                     console.log('Not found: ' + data.update.iodevice + ", " + data.update.iocontrol);
@@ -156,7 +160,13 @@ var Home= {
                                     html += "<tr>";
                                     html += "<td>"+dev.name+"</td>";
                                     html += "<td><span iocontrol='"+dev.iocontrol+ "' iodevice='"+dev.iodevice+"'>";
-                                    html += "</span></td>";
+                                    html += "</span>";
+                                    if (dev.name.indexOf('licht') > -1) { 
+                                        html += " %"; 
+                                    } else if (dev.name.indexOf('temp') > -1) {
+                                        html += " &#176C";
+                                    }
+                                    html += "</td>";
                                     html += "</tr>";
                                 } else if (dev.type === 'pc') {
                                     html += "<tr>";
