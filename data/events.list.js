@@ -1,22 +1,23 @@
+/*jslint todo: true */
 module.exports = [
 {
     room: "kamer",
     type: "events",
     name: "test event",
-    iodevice: "arduino02",
-    iocontrol: 'di13',
-    event: "di13 =0",
+    iodevice: "kaku",
+    event: "0x7B6E08A=On",
     action: function() {
-        console.log("EVENT: PAAF! het ledje is uit!");
+        //TODO: replace 'action' with 'trigger' 
+        //TODO: use 'on' function to set multiple handlers
+        console.log("PAAF!");
     }
 },
 {
     room: "kamer",
     type: "events",
     name: "beweging in de kamer",
-    iodevice: "arduino02",
-    iocontrol: "an5",
-    event: "an5 >500",
+    iodevice: "kaku",
+    event: "0xFFCDC89=On",
     action: function() {
         console.log('EVENT: beweging in de kamer');
     }

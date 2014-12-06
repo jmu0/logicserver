@@ -9,9 +9,9 @@ var checkinterval;
 
 function doCommand(cmd) {
     //TODO: cleanup this mess
-    var events, recevent, device, i, obj;
-    var iodevice,iocontrol,value;
-    if (Home.debug) { console.log("ioclient: " + cmd); }
+    var device;
+    var obj, iodevice,iocontrol,value;
+    //DEBUG if (Home.debug) { console.log("ioclient: " + cmd); }
     var command = cmd.split(' ');
     if (command.length > 1) {
         iodevice = command[1];
@@ -33,6 +33,8 @@ function doCommand(cmd) {
             iodevice = obj.name;
             device = iodevice; 
             value = obj.status;
+        } else if (command[0] === 'event' && command[1] === 'kaku') {
+            device = 'kaku';
         } else {
             if (command[2]) {
                 iocontrol = command[2].split('=')[0];
@@ -62,6 +64,9 @@ function doCommand(cmd) {
                     Home.devices.save();
                 }
             } else if (command[0] === 'event') {
+                Home.events.event(command[1].trim(), command[2].trim());
+                /* OUD
+                var events, recevent, i;
                 events = device.events();
                 recevent = command[2]+" "+command[3];
                 for (i=0; i < events.length; i++) {
@@ -71,6 +76,7 @@ function doCommand(cmd) {
                         break;
                     }
                 }
+                */
             } else if (command[0] === 'returnstatus') {
                 Home.sensors.update(cmd.substr(12));
             }
@@ -117,7 +123,7 @@ function connectServer() {
 
 module.exports = {
     write: function(data) {
-        if (Home.debug) { console.log('ioclient:' + data); }
+        //DEBUG: if (Home.debug) { console.log('ioclient:' + data); }
         if (data.substr(data.length -1) !== "\n") { data += "\n"; }
         server.write(data);
     }

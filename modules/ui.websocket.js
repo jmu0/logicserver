@@ -48,7 +48,7 @@ module.exports = {
     socket: socket,
     broadcast: function(data) {
         var i;
-        if (Home.debug) { console.log('websocket broadcasting: ' + data); }
+        //DEBUG if (Home.debug) { console.log('websocket broadcasting: ' + data); }
         for(i in this.socket.clients) {
             if (this.socket.clients.hasOwnProperty(i)){
                 if (Home.debug) { console.log('broadcast to: '+ this.socket.clients[i]._socket.remoteAddress); }

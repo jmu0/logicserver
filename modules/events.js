@@ -14,5 +14,13 @@ module.exports = {
     list: list,
     save: function() {
         console.log('saving modules/events.list.js');
+    },
+    event: function(iodevice, event) {
+        if (Home.debug) { console.log('Event: '+iodevice+', '+event); }
+        for (i=0; i < this.list.length; i++) {
+            if ((this.list[i].iodevice === iodevice) && (this.lig[i].event === event)) { 
+                    this.list[i].action();
+            }
+        }
     }
 };

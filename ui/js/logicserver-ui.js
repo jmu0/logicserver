@@ -1,5 +1,6 @@
 /*global alert, $, WebSocket */
 var Home= {
+    debug: false,
     url: "http://domotica.muysers.nl",
     socketUrl: "ws://domotica.muysers.nl:8080",
     devices: undefined,
@@ -28,8 +29,7 @@ var Home= {
         console.log("socketClose "+JSON.stringify(evt));
     },
     socketMessage: function(evt){
-        //DEBUG: 
-        console.log("socketMessage: "+evt.data);
+        if (Home.debug) { console.log("socketMessage: "+evt.data); }
         var data = JSON.parse(evt.data);
         if (data.devices) {
             Home.devices = data.devices;

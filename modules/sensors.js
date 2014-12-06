@@ -28,12 +28,12 @@ module.exports = {
         console.log('TODO: saving modules/sensors.list.js');
     },
     update: function(data) {
-        if (Home.debug) { console.log('Home.sensors.update: ' + data); }
+        //DEBUG if (Home.debug) { console.log('Home.sensors.update: ' + data); }
         var obj = JSON.parse(data);
         for (i = 0; i < this.list.length; i++) {
             if (this.list[i].iodevice === obj.name) {
                 this.list[i].set(obj.status[this.list[i].iocontrol]);
-                if (Home.debug) { console.log(this.list[i].name + " = " + this.list[i].value + " (" + this.list[i].raw + ")"); }
+                //DEBUG if (Home.debug) { console.log(this.list[i].name + " = " + this.list[i].value + " (" + this.list[i].raw + ")"); }
                 Home.ui.websocket.broadcast(JSON.stringify({
                     update: this.list[i]
                 }));
