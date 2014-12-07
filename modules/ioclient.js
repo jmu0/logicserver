@@ -64,7 +64,7 @@ function doCommand(cmd) {
                     Home.devices.save();
                 }
             } else if (command[0] === 'event') {
-                Home.events.event(command[1].trim(), command[2].trim());
+                Home.events.trigger(command[1].trim(), command[2].trim());
                 /* OUD
                 var events, recevent, i;
                 events = device.events();
