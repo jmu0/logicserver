@@ -3,8 +3,15 @@ var list = require('../data/pc.list.js');
 var pc = require('./class.pc.js');
 var i,dev;
 
-for (i = 0; i < list.length; i++) {
+
+for (i=0; i < list.length; i++){
     list[i] = new pc(list[i]);
+    dev = list[i];
+    if (dev.room !== undefined && dev.type !== undefined && dev.hostname !== undefined) { 
+        if (Home[dev.room] === undefined){ Home[dev.room] = {}; }
+        if (Home[dev.room][dev.type] === undefined){ Home[dev.room][dev.type] = {}; }
+        Home[dev.room][dev.type][dev.hostname] = dev;
+    }
 }
 
 //ping all pc's / vlc's after 5 seconds to get status
@@ -25,15 +32,6 @@ setTimeout(function() {
     console.log(Home.pc);
 },10*1000);
 */
-
-for (i=0; i < list.length; i++){
-    dev = list[i];
-    if (dev.room !== undefined && dev.type !== undefined && dev.hostname !== undefined) { 
-        if (Home[dev.room] === undefined){ Home[dev.room] = {}; }
-        if (Home[dev.room][dev.type] === undefined){ Home[dev.room][dev.type] = {}; }
-        Home[dev.room][dev.type][dev.hostname] = dev;
-    }
-}
 
 module.exports = {
     list: list,

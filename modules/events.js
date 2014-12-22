@@ -23,7 +23,7 @@ event.prototype = {
             this.handlers[i]();
         }
     },
-    on: function(fn) {
+    addHandler: function(fn) {
         /** add event handler */
         this.handlers.push(fn);
     }
@@ -47,11 +47,11 @@ module.exports = {
         //TODO: save event list to file
         console.log('saving modules/events.list.js');
     },
-    findByDevice: function(iodevice, event) {
+    findByDevice: function(iodevice, ioevent) {
         /** finds event by device */
         var ret;
         for (i=0; i < this.list.length; i++) {
-            if ((this.list[i].iodevice === iodevice) && (this.list[i].event === event)) { 
+            if ((this.list[i].iodevice === iodevice) && (this.list[i].ioevent === ioevent)) { 
                     ret = this.list[i];
             }
         }
@@ -78,7 +78,22 @@ module.exports = {
         } else {
             event = this.findByName(evt);
         }
-        if (Home.debug) { console.log('Event:'); console.log(event); }
-        event.trigger();
+        if (event !== undefined) {
+            if (Home.debug) { console.log('Event trigger:'); console.log(event); }
+            event.trigger();
+        } else {
+            if (Home.debug) { 
+                console.log('Event not found:'); 
+                console.log(evt); 
+            }
+        }
+    },
+    on: function(name, callback) {
+        var event = this.findByName(name);
+        if (event) {
+            event.addHandler(callback);
+        } else {
+            console.log('Addhandler: event ' + name + ' not found.');
+        }
     }
 };

@@ -1,6 +1,7 @@
-/*global alert, $, WebSocket */
+/*jslint todo:true */
+/*global m, alert, $, WebSocket */
 var Home= {
-    debug: false,
+    debug: true,
     url: "http://domotica.muysers.nl",
     socketUrl: "ws://domotica.muysers.nl:8080",
     devices: undefined,
@@ -15,15 +16,26 @@ var Home= {
            Home.showDevices();
            });
            */
+          this.socketConnect();
+    },
+    socketConnect: function() {
         this.socket = new WebSocket(this.socketUrl);
         this.socket.onopen = function(evt) { Home.socketOpen(evt); };
         this.socket.onclose = function(evt) { Home.socketClose(evt); };
         this.socket.onmessage = function(evt) { Home.socketMessage(evt); };
         this.socket.onerror = function(evt) { Home.socketError(evt); };
+        this.socketTestInterval = setInterval(function(){
+            if (Home.socket.readyState === 3) {
+                console.error('socket down, reconecting...');
+                m.ui.status('socket down, reconecting...');
+                Home.socketConnect();
+            }
+        }, 5000);
     },
     socket: undefined,
     socketOpen: function(evt){
         console.log("socketOpen "+JSON.stringify(evt));
+        m.ui.status('websocket verbonden');
     },
     socketClose: function(evt){
         console.log("socketClose "+JSON.stringify(evt));
@@ -74,7 +86,8 @@ var Home= {
                     var type = $(n).attr('type');
                     var val, valIndex;
                     if (isNaN(parseInt(data.update.value,10))) {
-                        val = data.update.values[data.update.values.indexOf(data.update.value)];
+                        valIndex = data.update.values.indexOf(data.update.value);
+                        val = data.update.values[valIndex];
                     } else {
                         if (data.update.values){
                             val = data.update.values[data.update.values.indexOf(parseInt(data.update.value,10))];

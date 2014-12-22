@@ -31,6 +31,9 @@ module.exports = {
     update: function(iodevice, iocontrol, value) {
         console.log('updating: '+iodevice+ ' ' + iocontrol + " = " + value);
     },
+    setControl: function(control, value) {
+        Home.ioclient.write('setcontrol ' + control.iodevice + " " + control.iocontrol+"="+ value);
+    },
     find: function(dev) {
         var ret,found,j;
         for(i=0; i<Home.devices.list.length; i++){

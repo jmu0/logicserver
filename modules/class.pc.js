@@ -122,6 +122,6 @@ pc.prototype = {
         } else {
             console.log('ERROR: class pc, shutdown, geen hostname');
         }
-    },
+    }
 };
 module.exports = pc;
