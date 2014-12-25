@@ -1,4 +1,5 @@
 #!/bin/bash
 
 #sudo systemctl restart logicserver
-node logicserver.js debug
+#node logicserver.js debug
+node test.js

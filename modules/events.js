@@ -44,7 +44,7 @@ module.exports = {
     event: event,
     save: function() {
         /** saves event list to file */
-        //TODO: save event list to file
+        //TODO: save event list to file?
         console.log('saving modules/events.list.js');
     },
     findByDevice: function(iodevice, ioevent) {

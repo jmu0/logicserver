@@ -7,9 +7,16 @@ module.exports = [
         "vlcAlive": false
     },
     {
-        "hostname": "htpc2",
+        "hostname": "htpc1",
         "type": "pc",
         "room": "kamer",
+        "alive": false,
+        "vlcAlive": false
+    },
+    {
+        "hostname": "htpc2",
+        "type": "pc",
+        "room": "slaapkamer",
         "alive": false,
         "vlcAlive": false
     },
