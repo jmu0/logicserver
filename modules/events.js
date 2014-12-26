@@ -1,5 +1,6 @@
 /*jslint todo: true */
 /*global Home */
+//TODO: Vervangen door message???
 var i,evt;
 var list = require('../data/events.list.js'); 
 

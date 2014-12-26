@@ -8,10 +8,27 @@ var serverport = 9999;
 var checkinterval;
 
 function doCommand(cmd) {
+    var message, data;
+    if ((cmd.length > 0) && (cmd!== "\r\n")){
+        cmd = cmd.replace(/(\r\n|\n|\r)/gm,"").trim();
+        message = cmd.split(" ")[0];
+        data = cmd.substr(cmd.indexOf(' ') + 1);
+        try {
+            data = JSON.parse(data);
+        } catch (error) {
+            console.log("ERROR: invalid json: "+data);
+        }
+    } else {
+        console.log('ERROR: invallid command: ' + cmd);
+    }
+    Home.message.publish(message, data);
+
+
     //TODO: cleanup this mess
     var device;
     var obj, iodevice,iocontrol,value;
-    //DEBUG if (Home.debug) { console.log("ioclient: " + cmd); }
+    //DEBUG 
+    if (Home.debug) { console.log("ioclient: " + cmd); }
     var command = cmd.split(' ');
     if (command.length > 1) {
         iodevice = command[1];
@@ -30,9 +47,16 @@ function doCommand(cmd) {
             }
         } else if (iodevice.substr(0,1) === "{") { 
             obj = JSON.parse(iodevice); 
-            iodevice = obj.name;
+            //DEBUG: console.log(obj);
+            if(obj.name) { iodevice = obj.name;  }
+            if (obj.device) { iodevice = obj.device; }
+            if (obj.iodevice) { iodevice = obj.iodevice; }
             device = iodevice; 
-            value = obj.status;
+            if(obj.status) { value = obj.status; }
+            if (obj.command) { value = obj.command; }
+            if (obj.value) { value = obj.value; }
+            if (obj.iocontrol) { iocontrol = obj.value; }
+
         } else if (command[0] === 'event' && command[1] === 'kaku') {
             device = 'kaku';
         } else {
@@ -54,8 +78,13 @@ function doCommand(cmd) {
                     device.init();
                 }
                 */
+               /*TODO: implement message
             } else if (command[0] === 'update') {
-                device.value = value;
+                device = {
+                    "iodevice": device,
+                    "iocontrol":iocontrol,
+                    "value": value,
+                };
                 obj = {
                     update: device
                 };
@@ -63,6 +92,7 @@ function doCommand(cmd) {
                 if (iodevice !== 'pc') {
                     Home.devices.save();
                 }
+                */
             } else if (command[0] === 'event') {
                 Home.events.trigger({
                     iodevice: command[1].trim(), 
