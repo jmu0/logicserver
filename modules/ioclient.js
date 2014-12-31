@@ -26,9 +26,10 @@ function doCommand(cmd) {
 
     //TODO: cleanup this mess
     var device;
-    var obj, iodevice,iocontrol,value;
+    var obj, iodevice,iocontrol ,value;
     //DEBUG 
-    if (Home.debug) { console.log("ioclient: " + cmd); }
+    if (Home.debug) { console.log("ioclient: " + cmd); console.log('end ioclient'); }
+
     var command = cmd.split(' ');
     if (command.length > 1) {
         iodevice = command[1];
@@ -46,6 +47,12 @@ function doCommand(cmd) {
                 }
             }
         } else if (iodevice.substr(0,1) === "{") { 
+            iodevice = "";
+            var i;
+            for (i = 1; i < command.length; i++) {
+                iodevice += command[i];
+            }
+            //console.log('iodevice is json: ' + iodevice);
             obj = JSON.parse(iodevice); 
             //DEBUG: console.log(obj);
             if(obj.name) { iodevice = obj.name;  }
@@ -131,7 +138,7 @@ function serverData(data) {
 }
 
 function serverError(error) {
-    console.log("ERROR: " + error);
+    console.log("Server ERROR: " + error);
 }
 
 function connectServer() {
