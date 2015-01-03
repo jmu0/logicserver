@@ -14,11 +14,23 @@ for (i=0; i < list.length; i++){
 }
 
 Home.loader.on('ready', function(){
-    Home.message.on('update', function(data) {
+    Home.message.on('updatedevice', function(data) {
         //TODO: devices: handle update message
-        console.log('DEVICES update: '); console.log(data);
+        if (Home.debug) { console.log('DEVICES update: '); console.log(data); }
     });
-    //TODO: devices: handle returnstatus message
+    Home.message.on('returnstatus', function(data){ 
+        //TODO: devices: handle returnstatus message
+        if (Home.debug) { console.log('DEVICES returnstatus: '); console.log(data); }
+        Home.devices.list.forEach(function(device) {
+            if (device.iodevice === data.name && data.status[device.iocontrol]) {
+                if (device.value !== data.status[device.iocontrol]) {
+                    console.log('UPDATING:'); console.log(device);
+                    device.value = data.status[device.iocontrol];
+                    Home.message.publish('update', device);
+                }
+            }
+        });
+    });
 });
 
 module.exports = {
@@ -37,9 +49,9 @@ module.exports = {
             });
         }, 5000);
     },
-    update: function(iodevice, iocontrol, value) {
+    update: function(device) {
         //TODO: handle update
-        console.log('updating: '+iodevice+ ' ' + iocontrol + " = " + value);
+        if (Home.debug) { console.log('devices updating: ' + device.iodevice + ' ' + device.iocontrol + " = " + device.value); }
     },
     setControl: function(control, value) {
         //TODO: ipmlement message

@@ -23,12 +23,15 @@ function doCommand(cmd) {
     }
     Home.message.publish(message, data);
 
-    //TODO: returnstatus
+    //DONE: returnstatus sensors
+    //TODO: returnstatus devices 
     //TODO: pc
     //TODO: update ??
     //TODO: event
     //TODO: setcontrol
     //TODO: pong
+    //TODO: ioserver sends pong messages for events
+    //TODO: ioserver send updatedevice message instead of update message. use update message to update ui
 }
 
 //TODO: init: set iocontrols on iodevice based on stored values
