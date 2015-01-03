@@ -43,6 +43,14 @@ socket.on('connection', function(ws) {
     sendHomeObject(ws);
 });
 
+Home.loader.on('ready', function(){
+    Home.message.on('update', function(data){
+        //TODO: implement messages in websocket communication
+        Home.ui.websocket.broadcast(JSON.stringify({
+            update: data
+        }));
+    });
+});
 
 module.exports = {
     socket: socket,

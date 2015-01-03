@@ -1,3 +1,4 @@
+/*jslint todo: true */
 /*global Home */
 var i,sns;
 var list = require('../data/sensors.list.js'); 
@@ -22,22 +23,24 @@ setInterval(function(){
     }
 }, updateInterval);
 
+Home.loader.on('ready',function(){
+    Home.message.on('returnstatus', function(data){
+        Home.sensors.update(data);
+    });
+});
+
 module.exports = {
     list: list,
     save: function() {
         console.log('TODO: saving modules/sensors.list.js');
     },
     update: function(data) {
-        //DEBUG if (Home.debug) { console.log('Home.sensors.update: ' + data); }
-        var obj = JSON.parse(data);
         for (i = 0; i < this.list.length; i++) {
-            if (this.list[i].iodevice === obj.name) {
-                this.list[i].set(obj.status[this.list[i].iocontrol]);
-                //DEBUG if (Home.debug) { console.log(this.list[i].name + " = " + this.list[i].value + " (" + this.list[i].raw + ")"); }
-                Home.ui.websocket.broadcast(JSON.stringify({
-                    update: this.list[i]
-                }));
+            if (this.list[i].iodevice === data.name) {
+                this.list[i].set(data.status[this.list[i].iocontrol]);
+                Home.message.publish('update', this.list[i]);
             }
         }
     }
 };
+

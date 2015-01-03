@@ -1,3 +1,4 @@
+/*jslint todo: true */
 /*global Home */
 var i,dev;
 var list = require('../data/devices.list.js'); 
@@ -11,6 +12,14 @@ for (i=0; i < list.length; i++){
         Home[dev.room][dev.type][dev.name] = dev;
     }
 }
+
+Home.loader.on('ready', function(){
+    Home.message.on('update', function(data) {
+        //TODO: devices: handle update message
+        console.log('DEVICES update: '); console.log(data);
+    });
+    //TODO: devices: handle returnstatus message
+});
 
 module.exports = {
     list: list,
@@ -29,9 +38,11 @@ module.exports = {
         }, 5000);
     },
     update: function(iodevice, iocontrol, value) {
+        //TODO: handle update
         console.log('updating: '+iodevice+ ' ' + iocontrol + " = " + value);
     },
     setControl: function(control, value) {
+        //TODO: ipmlement message
         Home.ioclient.write('setcontrol ' + control.iodevice + " " + control.iocontrol+"="+ value);
     },
     find: function(dev) {
