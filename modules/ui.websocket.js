@@ -17,8 +17,23 @@ function sendHomeObject(ws) {
     //ws.send(util.inspect(obj, { depth: null }));
 }
 
-function doCommand(command) {
-    //TODO: implement messages
+function doCommand(cmd) {
+    var message, data;
+    if ((cmd.length > 0) && (cmd!== "\r\n")){
+        cmd = cmd.replace(/(\r\n|\n|\r)/gm,"").trim();
+        message = cmd.split(" ")[0];
+        data = cmd.substr(cmd.indexOf(' ') + 1);
+        try {
+            data = JSON.parse(data);
+        } catch (error) {
+            console.log("ERROR websocket doCommand: invalid json: "+data);
+        }
+    } else {
+        console.log('ERROR websocket doCommand: invallid command: ' + cmd);
+    }
+    Home.message.publish(message, data);
+    
+    /*
     var splitCommand = command.split(" ");
     switch (splitCommand[0]){
         case 'setcontrol': 
@@ -33,6 +48,7 @@ function doCommand(command) {
         default: 
             console.log('unknown command: ' + command);
     }
+    */
 }
 
 socket.on('connection', function(ws) {

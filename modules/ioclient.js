@@ -29,7 +29,8 @@ function doCommand(cmd) {
     //DONE: event
     //TODO: setstate
     //TODO: setcontrol
-    //TODO: implement messages on websocket
+    //DONE: implement messages from websocket
+    //TODO: implement messages to websocket
     //TODO: pc
     //TODO: pong
 }
@@ -71,7 +72,7 @@ function connectServer() {
 
 Home.loader.on('ready',function(){
     Home.message.on('setcontrol', function(data){
-        Home.iocolient.write('setcontrol ' + JSON.stringify(data));
+        Home.ioclient.write('setcontrol ' + JSON.stringify(data));
     });
 });
 

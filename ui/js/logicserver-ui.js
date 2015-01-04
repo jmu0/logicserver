@@ -319,12 +319,12 @@ var Home = {
         var alive = $(btn).attr('alive');
         var vlcbtn = $('button.vlcbutton[hostname="' + cmd.hostname + '"]');
         if (alive === 'true') {
-            cmd.command = "off";
+            cmd.command = "shutdown";
             $(btn).html('Wake');
             $(btn).attr('alive', 'false');
             $(vlcbtn).attr('disabled', 'disabled');
         } else {
-            cmd.command = "on";
+            cmd.command = "wake";
             $(btn).html('Shutdown');
             $(btn).attr('alive', 'true');
             $(vlcbtn).removeAttr('disabled');
@@ -336,7 +336,7 @@ var Home = {
         cmd.hostname = $(btn).attr('hostname');
         var alive = $(btn).attr('alive');
         if (alive === 'true') {
-            cmd.vlc = "stop";
+            cmd.vlc = "kill";
             $(btn).html('Start vlc');
             $(btn).attr('alive', 'false');
         } else {

@@ -21,7 +21,6 @@ Home.loader.on('ready', function(){
 module.exports = {
     list: list,
     updatecontrol: function(data){
-        if (Home.debug) { console.log('UPDATECONTROLS controls.js: '); console.log(data); }
         var control = Home.controls.findByIO(data);
         if (control) {
             if (control.value !== data.value){
