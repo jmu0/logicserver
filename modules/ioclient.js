@@ -34,6 +34,7 @@ function doCommand(cmd) {
     //TODO: thermostaat
     //TODO: logger
     //TODO: media player
+    //TODO: encrypt/decrypt communications
 }
 
 //TODO: init: set iocontrols on iodevice based on stored values
@@ -77,6 +78,18 @@ Home.loader.on('ready',function(){
     });
     Home.message.on('requeststatus', function(data){
         Home.ioclient.write('requeststatus ' + JSON.stringify(data));
+    });
+    Home.message.on('ping', function(data) {
+        Home.ioclient.write('ping '+ JSON.stringify(data));
+    });
+    Home.message.on('wake', function(data) {
+        Home.ioclient.write('wake ' + JSON.stringify(data));
+    });
+    Home.message.on('shutdown', function(data) {
+        Home.ioclient.write('shutdown ' + JSON.stringify(data));
+    });
+    Home.message.on('vlc', function(data) {
+        Home.ioclient.write('vlc ' + JSON.stringify(data));
     });
 });
 

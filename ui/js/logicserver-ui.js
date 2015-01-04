@@ -344,12 +344,12 @@ var Home = {
         var vlcbtn = $('button.vlcbutton[hostname="' + cmd.hostname + '"]');
         if (alive === 'true') {
             cmd.command = "shutdown";
-            $(btn).html('Wake');
+            $(btn).html('Shutting down...');
             $(btn).attr('alive', 'false');
             $(vlcbtn).attr('disabled', 'disabled');
         } else {
             cmd.command = "wake";
-            $(btn).html('Shutdown');
+            $(btn).html('Waking...');
             $(btn).attr('alive', 'true');
             $(vlcbtn).removeAttr('disabled');
         }

@@ -2,7 +2,10 @@
 var list = require('../data/pc.list.js');
 var pc = require('./class.pc.js');
 var i, dev;
+var pingInterval = 3 * 1000;
+var pingVlcInterval = 3 * 1000;
 
+if (Home.debug) { pingInterval = 30 * 1000; pingVlcInterval = 30 * 1000; }
 
 for (i = 0; i < list.length; i++) {
     list[i] = new pc(list[i]);
@@ -19,20 +22,21 @@ for (i = 0; i < list.length; i++) {
 }
 
 //ping all pc's / vlc's after 500 miliseconds to get status
-setTimeout(function() {
+setInterval(function() {
     for (i = 0; i < list.length; i++) {
         list[i].ping(list[i].hostname);
     }
-}, 500);
+}, pingInterval);
 
-setTimeout(function() {
+setInterval(function() {
     for (i = 0; i < list.length; i++) {
         list[i].pingVlc(list[i].hostname);
     }
-}, 1000);
+}, pingVlcInterval);
 
 Home.loader.on('ready', function() {
-    Home.message.on('pc', Home.pc.doCommand);
+    Home.message.on('pc', Home.pc.doCommand);//from websocket / state / controller
+    Home.message.on('pong', Home.pc.pong);
 });
 
 module.exports = {
@@ -45,6 +49,32 @@ module.exports = {
             }
         }
         return ret;
+    },
+    pong: function(data) {
+        var pc;
+        if (data.hostname) { //is pc pong
+            pc = Home.pc.find(data.hostname);
+            if (pc) {
+                if (data.pong === 'alive' && pc.alive === false) {
+                    pc.alive=true;
+                    Home.message.publish('update', pc);
+                } else if (data.pong === 'dead' && pc.alive === true){
+                    pc.alive=false;
+                    Home.message.publish('update', pc);
+                }
+            }
+        } else if (data.vlcHost) { //is vlc pong
+            pc = Home.pc.find(data.vlcHost);
+            if (pc) {
+                if (data.pong === 'alive' && pc.vlcAlive === false) {
+                    pc.vlcAlive=true;
+                    Home.message.publish('update', pc);
+                } else if (data.pong === 'dead' && pc.vlcAlive === true){
+                    pc.vlcAlive=false;
+                    Home.message.publish('update', pc);
+                }
+            }
+        }
     },
     doCommand: function(cmd) {
         var host;
@@ -59,6 +89,7 @@ module.exports = {
                     if (cmd.command === 'wake') {
                         host.wake();
                     } else if (cmd.command=== 'shutdown') {
+                        //DEBUG: console.log('PC SHUTDOWN COMMAND:'); console.log(host);
                         host.shutdown();
                     } else if (cmd.command === 'vlc') {
                         if (cmd.vlc !== undefined) {

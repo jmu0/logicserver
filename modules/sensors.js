@@ -2,8 +2,8 @@
 /*global Home */
 var i,sns;
 var list = require('../data/sensors.list.js'); 
-var updateInterval = 2 * 1000;
-if (Home.debug) { updateInterval = 20 * 1000; }
+var updateInterval = 20 * 1000;
+if (Home.debug) { updateInterval = 5 * 60 * 1000; }
 var updateIODevices = [];
 
 for (i=0; i < list.length; i++){
