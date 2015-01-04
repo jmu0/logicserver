@@ -21,20 +21,32 @@ Home.loader.on('ready', function(){
 module.exports = {
     list: list,
     updatecontrol: function(data){
-        //TODO: control: handle update message
         if (Home.debug) { console.log('UPDATECONTROLS controls.js: '); console.log(data); }
+        var control = Home.controls.findByIO(data);
+        if (control) {
+            if (control.value !== data.value){
+                control.value = data.value;
+                Home.controls.save();
+                Home.message.publish('update', control);
+            }
+        } else {
+            if (Home.debug) { console.log("updatecontrols: control not found"); }
+        }
     },
     returnstatus: function(data){
+        var changed = false; 
         if (Home.debug) { console.log('CONTROLS returnstatus: '); console.log(data); }
         Home.controls.list.forEach(function(control) {
             if (control.iodevice === data.name && data.status[control.iocontrol]) {
                 if (control.value !== data.status[control.iocontrol]) {
                     console.log('UPDATING:'); console.log(control);
                     control.value = data.status[control.iocontrol];
+                    changed = true;
                     Home.message.publish('update', control);
                 }
             }
         });
+        if (changed) { Home.controls.save(); }
     },
     save: function() {
         clearTimeout(this.t);
@@ -50,13 +62,18 @@ module.exports = {
             });
         }, 5000);
     },
-    update: function(control) {
-        //TODO: handle update
-        if (Home.debug) { console.log('controls updating: ' + control.iodevice + ' ' + control.iocontrol + " = " + control.value); }
-    },
     setControl: function(control, value) {
         //TODO: ipmlement message
         Home.ioclient.write('setcontrol ' + control.iodevice + " " + control.iocontrol+"="+ value);
+    },
+    findByIO: function(data) {
+        var ret;
+        Home.controls.list.forEach(function(control){
+            if (control.iodevice === data.iodevice && String(control.iocontrol) === data.iocontrol) {
+                ret = control;
+            }
+        });
+        return ret;
     },
     find: function(dev) {
         var ret,found,j;
