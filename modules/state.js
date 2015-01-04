@@ -1,17 +1,34 @@
 /*global Home */
+Home.loader.on('ready', function() {
+    Home.message.on('setstate', Home.state.set);
+});
 module.exports = {
-    getList: function(){
+    getList: function() {
         var i;
-        var lst=[];
-        for(i in Home.state) {
-            if (Home.state.hasOwnProperty(i)){
-                if (i !== "getList") {
+        var lst = [];
+        for (i in Home.state) {
+            if (Home.state.hasOwnProperty(i)) {
+                if (i !== "getList" && i !== "set") {
                     lst.push(i);
                 }
             }
         }
         return lst;
-    }, 
+    },
+    set: function(data) {
+        if (data.state) {
+            if (Home.state[data.state] !== undefined) {
+                if (Home.debug) {
+                    console.log('Setting state: ' + data.state);
+                }
+                Home.state[data.state]();
+            } else {
+                if (Home.debug) {
+                    console.log('ERROR invalid state: ' + data.state);
+                }
+            }
+        }
+    },
     allesUit: function() {
         Home.controls.setControl(Home.kamer.verlichting.plafond1, 'off');
         Home.controls.setControl(Home.kamer.verlichting.plafond2, 'off');
@@ -40,4 +57,3 @@ module.exports = {
         Home.controls.setControl(Home.keuken.verlichting.plafond1, 'off');
     }
 };
-

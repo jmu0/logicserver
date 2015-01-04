@@ -1,5 +1,6 @@
 /*jslint todo: true */
 /*global Home */
+
 var i,dev;
 var list = require('../data/controls.list.js'); 
 var fs = require('fs');
@@ -37,7 +38,7 @@ module.exports = {
         if (Home.debug) { console.log('CONTROLS returnstatus: '); console.log(data); }
         Home.controls.list.forEach(function(control) {
             if (control.iodevice === data.name && data.status[control.iocontrol]) {
-                if (control.value !== data.status[control.iocontrol]) {
+                if (String(control.value) !== String(data.status[control.iocontrol])) {
                     console.log('UPDATING:'); console.log(control);
                     control.value = data.status[control.iocontrol];
                     changed = true;
@@ -61,10 +62,18 @@ module.exports = {
             });
         }, 5000);
     },
+    setControl: function(control,value) {
+        //from state, controllers
+        Home.message.publish('setcontrol', {
+            iodevice: control.iodevice,
+            iocontrol: control.iocontrol,
+            value: value
+        });
+    },
     findByIO: function(data) {
         var ret;
         Home.controls.list.forEach(function(control){
-            if (control.iodevice === data.iodevice && String(control.iocontrol) === data.iocontrol) {
+            if (control.iodevice === data.iodevice && String(control.iocontrol) === String(data.iocontrol)) {
                 ret = control;
             }
         });
@@ -76,13 +85,11 @@ module.exports = {
             found=false;
             for (j in dev){
                 if (dev.hasOwnProperty(j)) {
-                    //console.log(Home.controls.list[i][j] + " = " + dev[j]);
                     if (String(Home.controls.list[i][j]) === String(dev[j])){
                         found=true;
                     } else {
                         found=false;
                     }
-                    //console.log(found);
                 }
             }
             if (found) { ret = Home.controls.list[i]; }

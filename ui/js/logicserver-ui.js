@@ -32,7 +32,7 @@ var Home = {
                 m.ui.status('socket down, reconecting...');
                 Home.socketConnect();
             }
-        }, 5000);
+        }, 2000);
     },
     socket: undefined,
     socketOpen: function(evt) {

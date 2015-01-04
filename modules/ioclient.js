@@ -27,7 +27,7 @@ function doCommand(cmd) {
     //DONE: returnstatus controls 
     //DONE: updatecontrol
     //DONE: event
-    //TODO: setstate
+    //DONE: setstate
     //TODO: setcontrol
     //DONE: implement messages from websocket
     //TODO: implement messages to websocket
