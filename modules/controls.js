@@ -62,10 +62,6 @@ module.exports = {
             });
         }, 5000);
     },
-    setControl: function(control, value) {
-        //TODO: ipmlement message
-        Home.ioclient.write('setcontrol ' + control.iodevice + " " + control.iocontrol+"="+ value);
-    },
     findByIO: function(data) {
         var ret;
         Home.controls.list.forEach(function(control){

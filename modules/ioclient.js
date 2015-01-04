@@ -25,8 +25,9 @@ function doCommand(cmd) {
 
     //DONE: returnstatus sensors
     //DONE: returnstatus controls 
-    //TODO: updatecontrol
-    //TODO: event
+    //DONE: updatecontrol
+    //DONE: event
+    //TODO: setstate
     //TODO: setcontrol
     //TODO: implement messages on websocket
     //TODO: pc
@@ -68,6 +69,11 @@ function connectServer() {
     }, 2000);
 }
 
+Home.loader.on('ready',function(){
+    Home.message.on('setcontrol', function(data){
+        Home.iocolient.write('setcontrol ' + JSON.stringify(data));
+    });
+});
 
 
 module.exports = {

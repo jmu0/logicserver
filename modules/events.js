@@ -1,15 +1,25 @@
 /*jslint todo: true */
 /*global Home */
 //TODO: Vervangen door message???
-var i,evt;
-var list = require('../data/events.list.js'); 
+var i, evt;
+var list = require('../data/events.list.js');
 
 function event(e) {
-    if (e.room) { this.room = e.room; }
-    if (e.type) { this.type = e.type; }
-    if (e.name) { this.name = e.name; }
-    if (e.iodevice) { this.iodevice = e.iodevice; }
-    if (e.ioevent) { this.ioevent = e.ioevent; }
+    if (e.room) {
+        this.room = e.room;
+    }
+    if (e.type) {
+        this.type = e.type;
+    }
+    if (e.name) {
+        this.name = e.name;
+    }
+    if (e.iodevice) {
+        this.iodevice = e.iodevice;
+    }
+    if (e.ioevent) {
+        this.ioevent = e.ioevent;
+    }
 }
 event.prototype = {
     room: undefined,
@@ -18,9 +28,9 @@ event.prototype = {
     iodevice: undefined,
     ioevent: undefined,
     handlers: [],
-    trigger: function(){
+    trigger: function() {
         /** trigger all event handlers */
-        for (i=0; i<this.handlers.length; i++) {
+        for (i = 0; i < this.handlers.length; i++) {
             this.handlers[i]();
         }
     },
@@ -30,15 +40,29 @@ event.prototype = {
     }
 };
 
-for (i=0; i < list.length; i++){
+for (i = 0; i < list.length; i++) {
     list[i] = new event(list[i]);
     evt = list[i];
-    if (evt.room !== undefined && evt.type !== undefined && evt.name !== undefined) { 
-        if (Home[evt.room] === undefined){ Home[evt.room] = {}; }
-        if (Home[evt.room][evt.type] === undefined){ Home[evt.room][evt.type] = {}; }
+    if (evt.room !== undefined && evt.type !== undefined && evt.name !== undefined) {
+        if (Home[evt.room] === undefined) {
+            Home[evt.room] = {};
+        }
+        if (Home[evt.room][evt.type] === undefined) {
+            Home[evt.room][evt.type] = {};
+        }
         Home[evt.room][evt.type][evt.name] = evt;
     }
 }
+
+Home.loader.on('ready', function() {
+    Home.message.on('event', function(data) {
+        Home.events.list.forEach(function(event) {
+            if (data.iodevice === event.iodevice && data.ioevent === event.ioevent) {
+                event.trigger();
+            }
+        });
+    });
+});
 
 module.exports = {
     list: list,
@@ -46,14 +70,14 @@ module.exports = {
     save: function() {
         /** saves event list to file */
         //TODO: save event list to file?
-        console.log('saving modules/events.list.js');
+        console.log('saving data/events.list.js');
     },
     findByDevice: function(iodevice, ioevent) {
         /** finds event by device */
         var ret;
-        for (i=0; i < this.list.length; i++) {
-            if ((this.list[i].iodevice === iodevice) && (this.list[i].ioevent === ioevent)) { 
-                    ret = this.list[i];
+        for (i = 0; i < this.list.length; i++) {
+            if ((this.list[i].iodevice === iodevice) && (this.list[i].ioevent === ioevent)) {
+                ret = this.list[i];
             }
         }
         return ret;
@@ -61,14 +85,15 @@ module.exports = {
     findByName: function(name) {
         /** finds event by name */
         var ret;
-        for (i=0; i < this.list.length; i++) {
-            if (this.list[i].name === name) { 
-                    ret = this.list[i];
+        for (i = 0; i < this.list.length; i++) {
+            if (this.list[i].name === name) {
+                ret = this.list[i];
             }
         }
         return ret;
     },
     trigger: function(evt) {
+        //TODO: trigger by message
         /** triggers event
          *  if event is object: find by device, else find by name
          *  call trigger function
@@ -80,12 +105,15 @@ module.exports = {
             event = this.findByName(evt);
         }
         if (event !== undefined) {
-            if (Home.debug) { console.log('Event trigger:'); console.log(event); }
+            if (Home.debug) {
+                console.log('Event trigger:');
+                console.log(event);
+            }
             event.trigger();
         } else {
-            if (Home.debug) { 
-                console.log('Event not found:'); 
-                console.log(evt); 
+            if (Home.debug) {
+                console.log('Event not found:');
+                console.log(evt);
             }
         }
     },

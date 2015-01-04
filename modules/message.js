@@ -1,4 +1,6 @@
 /*jslint todo: true */
+/*global Home */
+
 module.exports = {
     //TODO: implement filter???
     handlers: {},
@@ -10,7 +12,7 @@ module.exports = {
     },
     publish: function(message, data){
         //DEBUG:  
-        console.log('Publish message: ' + message); console.log(data);
+        if (Home.debug) { console.log('Publish message: ' + message); console.log(data); }
         if (this.handlers[message] !== undefined){
             this.handlers[message].forEach(function(handler){
                 handler(data);

@@ -14,6 +14,7 @@ Home.loader.on('ready', function(){
         plafond2: Home.kamer.verlichting.plafond2.value
     };
     Home.events.on('beweging in de kamer', function() {
+        if (Home.debug) { console.log('BEWEGING IN DE KAMER!'); }
         if(Home.kamer.sensors.licht.value < threshold) {
             if (aangezet === false) {
                 orig.plafond1 = Home.kamer.verlichting.plafond1.value;
