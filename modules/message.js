@@ -11,7 +11,6 @@ module.exports = {
         this.handlers[message].push(callback);
     },
     publish: function(message, data){
-        //DEBUG:  
         if (Home.debug) { console.log('Publish message: ' + message); console.log(data); }
         if (this.handlers[message] !== undefined){
             this.handlers[message].forEach(function(handler){

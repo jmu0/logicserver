@@ -28,11 +28,12 @@ function doCommand(cmd) {
     //DONE: updatecontrol
     //DONE: event
     //DONE: setstate
-    //TODO: setcontrol
+    //DONE: setcontrol
     //DONE: implement messages from websocket
-    //TODO: implement messages to websocket
-    //TODO: pc
-    //TODO: pong
+    //DONE: implement messages to websocket
+    //TODO: thermostaat
+    //TODO: logger
+    //TODO: media player
 }
 
 //TODO: init: set iocontrols on iodevice based on stored values
@@ -73,6 +74,9 @@ function connectServer() {
 Home.loader.on('ready',function(){
     Home.message.on('setcontrol', function(data){
         Home.ioclient.write('setcontrol ' + JSON.stringify(data));
+    });
+    Home.message.on('requeststatus', function(data){
+        Home.ioclient.write('requeststatus ' + JSON.stringify(data));
     });
 });
 

@@ -35,7 +35,6 @@ module.exports = {
     },
     returnstatus: function(data){
         var changed = false; 
-        if (Home.debug) { console.log('CONTROLS returnstatus: '); console.log(data); }
         Home.controls.list.forEach(function(control) {
             if (control.iodevice === data.name && data.status[control.iocontrol]) {
                 if (String(control.value) !== String(data.status[control.iocontrol])) {

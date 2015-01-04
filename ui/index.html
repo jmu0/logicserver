@@ -26,9 +26,10 @@
                 <button class='toggle visible-sm'><i class='fa fa-bars'></i></button>
                 <ul class='hidden-sm'>
                     <li><a href='#' onclick='m.ui.show("home")' class='een'><i class='fa fa-home'></i>Home</a></li>
-                    <li><a href='#' onclick='m.ui.show("controls")' class='een'><i class='fa fa-gear'></i>Controls</a></li>
+                    <li><a href='#' onclick='m.ui.show("controls")' class='een'><i class='fa fa-gear'></i>Controls / Sensors</a></li>
                     <li><a href='#' onclick='m.ui.show("controllers")' class='een'><i class='fa fa-tachometer'></i>Controllers</a></li>
                     <li><a href='#' onclick='m.ui.show("state")' class='een'><i class='fa fa-check'></i>State</a></li>
+                    <li><a href='#' onclick='m.ui.show("logs")' class='een'><i class='fa fa-file-o'></i>Logs</a></li>
                 </ul>
             </nav>
         </header>
@@ -48,7 +49,7 @@
 
             </div><!--huis-->
             <div class='content page full-width controls'>
-                <h2>Controls</h2>
+                <h2>Controls / Sensors</h2>
                 <button onclick="Home.resetControls()" class='pull-right' style='margin: -20px 5px 5px'>Reset</button>
                 <div id='controls'></div>
             </div><!--apparaten-->
@@ -59,7 +60,11 @@
             <div class='content page full-width state'>
                 <h2>State</h2>
                 <div id='state'></div>
-            </div><!--scenes-->
+            </div><!--state-->
+            <div class='content page full-width logs'>
+                <h2>Logs</h2>
+                <div id='logs'></div>
+            </div><!--state-->
         </div><!--content wrapper-->
         <footer>
             <span class='status'></span>

@@ -12,15 +12,18 @@ function pc(props) {
         }
     }
 }
-var pcInterval,vlcInterval;
+var pcInterval,vlcInterval; //store timout variables
 var onValue = false; 
 var vlcOnValue = false;
 
 pc.prototype = {
-    on: function() {
+    wake: function() {
         onValue=true;
         if (this.alive===false) {
-            Home.ioclient.write('pc ' + this.hostname + ' wake');
+            Home.message.publish('ping', {
+                hostname: this.hostname
+            });
+            //Home.ioclient.write('ping' + this.hostname + ' wake');
             var dit = this;
             setTimeout(function(){ 
                 pcInterval = setInterval(function() {
@@ -30,16 +33,23 @@ pc.prototype = {
             },startPcTimeout);
         }
     },
-    off: function() {
+    shutdown: function() {
         onValue=false;
         clearInterval(pcInterval);
         this.stopVlc();
         this.alive=false;
-        this.shutdown();
+        if (this.hostname !== undefined) {
+            Home.ioclient.write('pc ' + this.hostname + ' shutdown');
+        } else {
+            console.log('ERROR: class pc, shutdown, no hostname');
+        }
     },
     ping: function(hostname) { //hostname required, in setinterval this=interval
         if (hostname !== undefined) {
-            Home.ioclient.write('pc ' + hostname + ' ping');
+            Home.message.publish('ping', {
+                hostname: this.hostname
+            });
+            //Home.ioclient.write('pc ' + hostname + ' ping');
         } else {
             console.log('ERROR: class pc, ping, geen hostname');
         }
@@ -79,7 +89,7 @@ pc.prototype = {
             console.log('ERROR: class pc, start vlc, geen hostname');
         }
     },
-    stopVlc: function() {
+    killVlc: function() {
         vlcOnValue = false; 
         if (this.hostname !== undefined) {
             clearInterval(vlcInterval);
@@ -116,13 +126,10 @@ pc.prototype = {
             console.log('ERROR: class pc, wake, geen hostname');
         }
     },
+    /*
     shutdown: function() {
-        if (this.hostname !== undefined) {
-            Home.ioclient.write('pc ' + this.hostname + ' shutdown');
-        } else {
-            console.log('ERROR: class pc, shutdown, geen hostname');
-        }
     }
+    */
 };
 
 module.exports = pc;

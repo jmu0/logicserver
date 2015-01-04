@@ -2,7 +2,8 @@
 /*global Home */
 var i,sns;
 var list = require('../data/sensors.list.js'); 
-var updateInterval = 200000;
+var updateInterval = 2 * 1000;
+if (Home.debug) { updateInterval = 20 * 1000; }
 var updateIODevices = [];
 
 for (i=0; i < list.length; i++){
@@ -19,7 +20,10 @@ for (i=0; i < list.length; i++){
 
 setInterval(function(){
     for(i=0; i<updateIODevices.length; i++) {
-        Home.ioclient.write('requeststatus ' + updateIODevices[i] + ' logic');
+        Home.message.publish('requeststatus', {
+            to: updateIODevices[i],
+            from: "logic"
+        });
     }
 }, updateInterval);
 

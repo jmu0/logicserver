@@ -43,10 +43,30 @@ var Home = {
         console.log("socketClose " + JSON.stringify(evt));
     },
     socketMessage: function(evt) {
+        var message, data;
         if (Home.debug) {
             console.log("socketMessage: " + evt.data);
         }
-        var data = JSON.parse(evt.data);
+        if ((evt.data.length > 0) && (evt.data !== "\r\n")) {
+            evt.data = evt.data.replace(/(\r\n|\n|\r)/gm, "").trim();
+            message = evt.data.split(" ")[0];
+            data = evt.data.substr(evt.data.indexOf(' ') + 1);
+            try {
+                data = JSON.parse(data);
+            } catch (error) {
+                console.log("ERROR: invalid json: " + data);
+            }
+        } else {
+            console.log('ERROR: invallid command: ' + evt.data);
+        }
+
+        if (message === 'home') {
+            Home.processHomeObject(data);
+        } else if (message === 'update') {
+            Home.update(data);
+        }
+    },
+    processHomeObject: function(data) {
         if (data.controls) {
             Home.controls = data.controls;
         }
@@ -63,66 +83,66 @@ var Home = {
             Home.getcontrols();
             Home.showcontrols();
         }
-        if (data.update) {
-            if (data.update.hostname) {
-                var btn = $('button.pcbutton[hostname="' + data.update.hostname + '"]');
-                var vlcbtn = $('button.vlcbutton[hostname="' + data.update.hostname + '"]');
-                if (data.update.alive) {
-                    $(btn).html('Shutdown');
-                    $(btn).attr('alive', 'true');
-                    $(vlcbtn).removeAttr('disabled');
-                } else {
-                    $(btn).html('Wake');
-                    $(btn).attr('alive', 'false');
-                    $(vlcbtn).attr('disabled', 'disabled');
-                }
-                if (data.update.vlcAlive) {
-                    $(vlcbtn).html('Kill vlc');
-                    $(vlcbtn).attr('alive', 'true');
-                } else {
-                    $(vlcbtn).html('Start vlc');
-                    $(vlcbtn).attr('alive', 'false');
-                }
-            } else {
-                var n = $('[iodevice="' + data.update.iodevice + '"][iocontrol="' + data.update.iocontrol + '"]')[0];
-                if (n) {
-                    var nm = $(n).get(0).nodeName;
-                    var type = $(n).attr('type');
-                    var val, valIndex;
-                    if (isNaN(parseInt(data.update.value, 10))) {
-                        valIndex = data.update.values.indexOf(data.update.value);
-                        val = data.update.values[valIndex];
-                    } else {
-                        if (data.update.values) {
-                            val = data.update.values[data.update.values.indexOf(parseInt(data.update.value, 10))];
-                            valIndex = data.update.values.indexOf(val);
-                        } else {
-                            val = data.update.value;
-                        }
-                    }
-                    if (nm === 'INPUT') {
-                        if (type === 'checkbox') {
-                            if (valIndex === 0) {
-                                n.checked = false;
-                            } else {
-                                n.checked = true;
-                            }
-                        } else if (type === 'range') {
-                            $(n).val(valIndex);
-                        } else {
-                            $(n).val(val);
-                        }
-                    } else if (nm === 'SPAN') {
-                        $(n).html(val);
-                    }
-                } else {
-                    console.log('Not found: ' + data.update.iodevice + ", " + data.update.iocontrol);
-                }
-            }
-        }
         if (data.state) {
             Home.states = data.state;
             Home.showStates();
+        }
+    },
+    update: function(data) {
+        if (data.hostname) {
+            var btn = $('button.pcbutton[hostname="' + data.hostname + '"]');
+            var vlcbtn = $('button.vlcbutton[hostname="' + data.hostname + '"]');
+            if (data.alive) {
+                $(btn).html('Shutdown');
+                $(btn).attr('alive', 'true');
+                $(vlcbtn).removeAttr('disabled');
+            } else {
+                $(btn).html('Wake');
+                $(btn).attr('alive', 'false');
+                $(vlcbtn).attr('disabled', 'disabled');
+            }
+            if (data.vlcAlive) {
+                $(vlcbtn).html('Kill vlc');
+                $(vlcbtn).attr('alive', 'true');
+            } else {
+                $(vlcbtn).html('Start vlc');
+                $(vlcbtn).attr('alive', 'false');
+            }
+        } else {
+            var n = $('[iodevice="' + data.iodevice + '"][iocontrol="' + data.iocontrol + '"]')[0];
+            if (n) {
+                var nm = $(n).get(0).nodeName;
+                var type = $(n).attr('type');
+                var val, valIndex;
+                if (isNaN(parseInt(data.value, 10))) {
+                    valIndex = data.values.indexOf(data.value);
+                    val = data.values[valIndex];
+                } else {
+                    if (data.values) {
+                        val = data.values[data.values.indexOf(parseInt(data.value, 10))];
+                        valIndex = data.values.indexOf(val);
+                    } else {
+                        val = data.value;
+                    }
+                }
+                if (nm === 'INPUT') {
+                    if (type === 'checkbox') {
+                        if (valIndex === 0) {
+                            n.checked = false;
+                        } else {
+                            n.checked = true;
+                        }
+                    } else if (type === 'range') {
+                        $(n).val(valIndex);
+                    } else {
+                        $(n).val(val);
+                    }
+                } else if (nm === 'SPAN') {
+                    $(n).html(val);
+                }
+            } else {
+                console.log('Not found: ' + data.iodevice + ", " + data.iocontrol);
+            }
         }
     },
     socketError: function(evt) {
@@ -140,15 +160,17 @@ var Home = {
             }
             Home.rooms[dev.room][dev.type][dev.name] = dev;
         }
-        for (i = 0; i < Home.events.length; i++) {
-            dev = Home.events[i];
-            if (Home.rooms[dev.room] === undefined) {
-                Home.rooms[dev.room] = {};
+        if (Home.events) {
+            for (i = 0; i < Home.events.length; i++) {
+                dev = Home.events[i];
+                if (Home.rooms[dev.room] === undefined) {
+                    Home.rooms[dev.room] = {};
+                }
+                if (Home.rooms[dev.room][dev.type] === undefined) {
+                    Home.rooms[dev.room][dev.type] = {};
+                }
+                Home.rooms[dev.room][dev.type][dev.name] = dev;
             }
-            if (Home.rooms[dev.room][dev.type] === undefined) {
-                Home.rooms[dev.room][dev.type] = {};
-            }
-            Home.rooms[dev.room][dev.type][dev.name] = dev;
         }
         for (i = 0; i < Home.sensors.length; i++) {
             dev = Home.sensors[i];
@@ -303,7 +325,9 @@ var Home = {
                 break;
         }
         cmd.value = value;
-        if (Home.debug) { console.log(cmd); }
+        if (Home.debug) {
+            console.log(cmd);
+        }
         Home.socket.send('setcontrol ' + JSON.stringify(cmd));
     },
     resetControls: function() {
@@ -334,6 +358,7 @@ var Home = {
     vlcOnOff: function(btn) {
         var cmd = {};
         cmd.hostname = $(btn).attr('hostname');
+        cmd.command = 'vlc';
         var alive = $(btn).attr('alive');
         if (alive === 'true') {
             cmd.vlc = "kill";

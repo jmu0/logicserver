@@ -81,7 +81,7 @@ http.createServer(function(req,res) {
                 res.end(path+' bestaat niet');
             }
         });
-    //TODO: de volgende commando's gaan via websocket
+    /*TODO: de volgende commando's gaan via websocket
     }else if (query.command === 'setcontrol'){
         Home.ioclient.write('setcontrol ' + query.iodevice + " " + query.value);
         res.writeHead(200, { 'Content-Type': 'text/html'});
@@ -102,6 +102,7 @@ http.createServer(function(req,res) {
     }else{
         res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end(JSON.stringify(query));
+    */
     }
 }).listen(8888);
 console.log('http server listening on port 8888');
