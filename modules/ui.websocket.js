@@ -7,7 +7,7 @@ console.log('websocket listening on port 8080');
 
 function sendHomeObject(ws) {
     var obj = {
-        "devices": Home.devices.list,
+        "controls": Home.controls.list,
         "events": Home.events.list,
         "sensors": Home.sensors.list,
         "state": Home.state.getList(),
@@ -18,6 +18,7 @@ function sendHomeObject(ws) {
 }
 
 function doCommand(command) {
+    //TODO: implement messages
     var splitCommand = command.split(" ");
     switch (splitCommand[0]){
         case 'setcontrol': 

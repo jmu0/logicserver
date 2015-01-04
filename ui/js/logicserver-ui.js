@@ -4,16 +4,16 @@ var Home= {
     debug: true,
     url: "http://domotica.muysers.nl",
     socketUrl: "ws://domotica.muysers.nl:8080",
-    devices: undefined,
+    controls: undefined,
     rooms: {
         'keuken': {},
         'kamer': {}
     },
     init: function() {
         /* OUD
-           $.get('devices', function(data) {
-           Home.devices = JSON.parse(data);
-           Home.showDevices();
+           $.get('controls', function(data) {
+           Home.controls = JSON.parse(data);
+           Home.showcontrols();
            });
            */
           this.socketConnect();
@@ -43,8 +43,8 @@ var Home= {
     socketMessage: function(evt){
         if (Home.debug) { console.log("socketMessage: "+evt.data); }
         var data = JSON.parse(evt.data);
-        if (data.devices) {
-            Home.devices = data.devices;
+        if (data.controls) {
+            Home.controls = data.controls;
         }
         if (data.events) {
             Home.events = data.events;
@@ -55,9 +55,9 @@ var Home= {
         if (data.pc) {
             Home.pc = data.pc;
         }
-        if (data.devices || data.events || data.sensors || data.pc) {
-            Home.getDevices();
-            Home.showDevices();
+        if (data.controls || data.events || data.sensors || data.pc) {
+            Home.getcontrols();
+            Home.showcontrols();
         }
         if (data.update) {
             if (data.update.hostname) {
@@ -124,10 +124,10 @@ var Home= {
     socketError: function(evt){
         console.log("socketError "+JSON.stringify(evt));
     },
-    getDevices: function() {
+    getcontrols: function() {
         var i,dev;
-        for (i=0; i<Home.devices.length; i++){
-            dev=Home.devices[i];
+        for (i=0; i<Home.controls.length; i++){
+            dev=Home.controls[i];
             if (Home.rooms[dev.room] === undefined) { Home.rooms[dev.room] = {}; }
             if (Home.rooms[dev.room][dev.type] === undefined) { Home.rooms[dev.room][dev.type] = {}; }
             Home.rooms[dev.room][dev.type][dev.name] = dev;
@@ -151,8 +151,8 @@ var Home= {
             Home.rooms[dev.room][dev.type][dev.hostname] = dev;
         }
     },
-    showDevices: function() {
-        var room, type, device, dev, val;
+    showcontrols: function() {
+        var room, type, control, dev, val;
         var html = '<br><table><tbody>';
         for (room in Home.rooms) {
             if (Home.rooms.hasOwnProperty(room)) {
@@ -160,9 +160,9 @@ var Home= {
                 for(type in Home.rooms[room]) {
                     if (Home.rooms[room].hasOwnProperty(type)){
                         html += "<tr><td class='kop2' colspan=2>" + type + "</td></tr>";
-                        for(device in Home.rooms[room][type]){
-                            if (Home.rooms[room][type].hasOwnProperty(device)){
-                                dev = Home.rooms[room][type][device];
+                        for(control in Home.rooms[room][type]){
+                            if (Home.rooms[room][type].hasOwnProperty(control)){
+                                dev = Home.rooms[room][type][control];
                                 if (dev.type === 'events') {
                                     html += "<tr>";
                                     html += "<td>"+dev.name+"</td>";
@@ -240,7 +240,7 @@ var Home= {
                 }
             }
         }
-        $('div#devices').html(html);
+        $('div#controls').html(html);
     },
     showStates: function() {
         var html = '<table class="striped" width="100%"><tbody>';
@@ -284,8 +284,8 @@ var Home= {
     },
     resetControls: function() {
         var i,dev;
-        for (i=0; i<Home.devices.length; i++) {
-            dev=Home.devices[i];
+        for (i=0; i<Home.controls.length; i++) {
+            dev=Home.controls[i];
             Home.setcontrol(dev.iodevice,dev.iocontrol,dev.value);
         }
     },

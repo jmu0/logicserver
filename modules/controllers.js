@@ -20,8 +20,8 @@ Home.loader.on('ready', function(){
                 orig.plafond2 = Home.kamer.verlichting.plafond2.value;
             }
             console.log('CONTROLLER: beweging in de kamer > te donker > licht aan');
-            Home.devices.setControl(Home.kamer.verlichting.plafond1, '8');
-            Home.devices.setControl(Home.kamer.verlichting.plafond2, '8');
+            Home.controls.setControl(Home.kamer.verlichting.plafond1, '8');
+            Home.controls.setControl(Home.kamer.verlichting.plafond2, '8');
             aangezet = true;
         }
         console.log(orig);
@@ -29,8 +29,8 @@ Home.loader.on('ready', function(){
         timeout = setTimeout(function() {
             if (aangezet) {
                 console.log('CONTROLLER: oude waarden terugzetten');
-                Home.devices.setControl(Home.kamer.verlichting.plafond1, orig.plafond1);
-                Home.devices.setControl(Home.kamer.verlichting.plafond2, orig.plafond2);
+                Home.controls.setControl(Home.kamer.verlichting.plafond1, orig.plafond1);
+                Home.controls.setControl(Home.kamer.verlichting.plafond2, orig.plafond2);
                 aangezet = false;
             }
         }, time);

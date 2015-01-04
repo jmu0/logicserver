@@ -1,7 +1,7 @@
 /*jslint todo: true */
 /*global Home */
 var i,dev;
-var list = require('../data/devices.list.js'); 
+var list = require('../data/controls.list.js'); 
 var fs = require('fs');
 
 for (i=0; i < list.length; i++){
@@ -14,32 +14,33 @@ for (i=0; i < list.length; i++){
 }
 
 Home.loader.on('ready', function(){
-    Home.message.on('updatedevice', function(data) {
-        //TODO: devices: handle update message
-        if (Home.debug) { console.log('DEVICES update: '); console.log(data); }
-    });
-    Home.message.on('returnstatus', function(data){ 
-        //TODO: devices: handle returnstatus message
-        if (Home.debug) { console.log('DEVICES returnstatus: '); console.log(data); }
-        Home.devices.list.forEach(function(device) {
-            if (device.iodevice === data.name && data.status[device.iocontrol]) {
-                if (device.value !== data.status[device.iocontrol]) {
-                    console.log('UPDATING:'); console.log(device);
-                    device.value = data.status[device.iocontrol];
-                    Home.message.publish('update', device);
-                }
-            }
-        });
-    });
+    Home.message.on('updatecontrol', Home.controls.updatecontrol);
+    Home.message.on('returnstatus', Home.controls.returnstatus);
 });
 
 module.exports = {
     list: list,
+    updatecontrol: function(data){
+        //TODO: control: handle update message
+        if (Home.debug) { console.log('UPDATECONTROLS controls.js: '); console.log(data); }
+    },
+    returnstatus: function(data){
+        if (Home.debug) { console.log('CONTROLS returnstatus: '); console.log(data); }
+        Home.controls.list.forEach(function(control) {
+            if (control.iodevice === data.name && data.status[control.iocontrol]) {
+                if (control.value !== data.status[control.iocontrol]) {
+                    console.log('UPDATING:'); console.log(control);
+                    control.value = data.status[control.iocontrol];
+                    Home.message.publish('update', control);
+                }
+            }
+        });
+    },
     save: function() {
         clearTimeout(this.t);
         this.t = setTimeout(function() {
-            var filename = Home.rootpath+'data/devices.list.js';
-            var file = "module.exports = " + JSON.stringify(Home.devices.list) + ";";
+            var filename = Home.rootpath+'data/controls.list.js';
+            var file = "module.exports = " + JSON.stringify(Home.controls.list) + ";";
             fs.writeFile(filename, file, function(error) {
                 if (error) {
                     console.log("ERROR writing file: " + filename + ": " + JSON.stringify(error));
@@ -49,9 +50,9 @@ module.exports = {
             });
         }, 5000);
     },
-    update: function(device) {
+    update: function(control) {
         //TODO: handle update
-        if (Home.debug) { console.log('devices updating: ' + device.iodevice + ' ' + device.iocontrol + " = " + device.value); }
+        if (Home.debug) { console.log('controls updating: ' + control.iodevice + ' ' + control.iocontrol + " = " + control.value); }
     },
     setControl: function(control, value) {
         //TODO: ipmlement message
@@ -59,12 +60,12 @@ module.exports = {
     },
     find: function(dev) {
         var ret,found,j;
-        for(i=0; i<Home.devices.list.length; i++){
+        for(i=0; i<Home.controls.list.length; i++){
             found=false;
             for (j in dev){
                 if (dev.hasOwnProperty(j)) {
-                    //console.log(Home.devices.list[i][j] + " = " + dev[j]);
-                    if (String(Home.devices.list[i][j]) === String(dev[j])){
+                    //console.log(Home.controls.list[i][j] + " = " + dev[j]);
+                    if (String(Home.controls.list[i][j]) === String(dev[j])){
                         found=true;
                     } else {
                         found=false;
@@ -72,7 +73,7 @@ module.exports = {
                     //console.log(found);
                 }
             }
-            if (found) { ret = Home.devices.list[i]; }
+            if (found) { ret = Home.controls.list[i]; }
         }
         return ret;
     }

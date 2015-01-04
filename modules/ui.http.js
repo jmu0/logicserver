@@ -20,17 +20,17 @@ function parseUrl(url) {
             q=false;
         } else { 
             q.command='setcontrol';
-            q.device=split[2];
+            q.iodevice=split[2];
             q.value=split[3];
         }
     } else if (split[1] === 'state') {
         q.command='state';
         q.value=split[2];
-    } else if (split[1]==='device'){
+    } else if (split[1]==='control'){
         if (split.lehgth<4) {
             q=false;
         } else { 
-            q.command='device';
+            q.command='control';
             q.value=split[split.length-1];
             q.device=split.splice(2,split.length-3);
         }
@@ -81,9 +81,9 @@ http.createServer(function(req,res) {
                 res.end(path+' bestaat niet');
             }
         });
-    //TODO: de volgende commando's via websocket
+    //TODO: de volgende commando's gaan via websocket
     }else if (query.command === 'setcontrol'){
-        Home.ioclient.write('setcontrol ' + query.device + " " + query.value);
+        Home.ioclient.write('setcontrol ' + query.iodevice + " " + query.value);
         res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end();
 
@@ -91,8 +91,8 @@ http.createServer(function(req,res) {
         Home.state[query.value]();
         res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end();
-    } else if (query.command === 'device'){
-        Home[query.device[0]][query.device[1]][query.device[2]].set(query.value);
+    } else if (query.command === 'control'){
+        Home[query.control[0]][query.control[1]][query.control[2]].set(query.value);
         res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end();
     } else if (query.command === 'devices') {
