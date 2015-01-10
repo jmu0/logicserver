@@ -44,8 +44,8 @@ module.exports = {
         Home.controls.setControl(Home.keuken.verlichting.plafond1, 'on');
     },
     avond: function() {
-        Home.controls.setControl(Home.kamer.verlichting.plafond1, '5');
-        Home.controls.setControl(Home.kamer.verlichting.plafond2, '3');
+        Home.controls.setControl(Home.kamer.verlichting.plafond1, '6');
+        Home.controls.setControl(Home.kamer.verlichting.plafond2, '2');
         Home.controls.setControl(Home.kamer.verlichting.spot1, 'off');
         Home.controls.setControl(Home.kamer.verlichting.staand, '2');
     },
@@ -55,5 +55,25 @@ module.exports = {
         Home.controls.setControl(Home.kamer.verlichting.spot1, '6');
         Home.controls.setControl(Home.kamer.verlichting.staand, '1');
         Home.controls.setControl(Home.keuken.verlichting.plafond1, 'off');
+    },
+    slapen: function() {
+        //verlichting
+        Home.controls.setControl(Home.kamer.verlichting.plafond1, 'off');
+        Home.controls.setControl(Home.kamer.verlichting.plafond2, '16');
+        setTimeout(function(){
+            Home.controls.setControl(Home.kamer.verlichting.plafond2, 'off');
+        }, 30 * 1000);
+        Home.controls.setControl(Home.kamer.verlichting.spot1, 'off');
+        Home.controls.setControl(Home.kamer.verlichting.staand, 'off');
+        Home.controls.setControl(Home.keuken.verlichting.plafond1, 'off');
+        //verwarming
+        Home.controls.setControl(Home.kamer.verwarming.radiator1, '0');
+        Home.controls.setControl(Home.kamer.verwarming.radiator2, '0');
+        Home.controls.setControl(Home.kamer.verwarming.radiator3, '0');
+        //pc
+        Home.pc.doCommand({
+            hostname: "htpc1",
+            command: "shutdown"
+        });
     }
 };

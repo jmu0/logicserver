@@ -2,13 +2,19 @@
 var list = require('../data/pc.list.js');
 var pc = require('./class.pc.js');
 var i, dev;
-var pingInterval = 3 * 1000;
-var pingVlcInterval = 3 * 1000;
+var pingInterval = 5 * 1000;
+var pingVlcInterval = 5 * 1000;
 
-if (Home.debug) { pingInterval = 30 * 1000; pingVlcInterval = 30 * 1000; }
+if (Home.debug) {
+    pingInterval = 30 * 1000;
+    pingVlcInterval = 30 * 1000;
+    console.log('ping interval: ' + pingInterval + ", " + pingVlcInterval);
+}
 
 for (i = 0; i < list.length; i++) {
     list[i] = new pc(list[i]);
+    list[i].ping(list[i].hostname);
+    list[i].pingVlc(list[i].hostname);
     dev = list[i];
     if (dev.room !== undefined && dev.type !== undefined && dev.hostname !== undefined) {
         if (Home[dev.room] === undefined) {
@@ -35,7 +41,7 @@ setInterval(function() {
 }, pingVlcInterval);
 
 Home.loader.on('ready', function() {
-    Home.message.on('pc', Home.pc.doCommand);//from websocket / state / controller
+    Home.message.on('pc', Home.pc.doCommand); //from websocket / state / controller
     Home.message.on('pong', Home.pc.pong);
 });
 
@@ -56,10 +62,10 @@ module.exports = {
             pc = Home.pc.find(data.hostname);
             if (pc) {
                 if (data.pong === 'alive' && pc.alive === false) {
-                    pc.alive=true;
+                    pc.alive = true;
                     Home.message.publish('update', pc);
-                } else if (data.pong === 'dead' && pc.alive === true){
-                    pc.alive=false;
+                } else if (data.pong === 'dead' && pc.alive === true) {
+                    pc.alive = false;
                     Home.message.publish('update', pc);
                 }
             }
@@ -67,10 +73,10 @@ module.exports = {
             pc = Home.pc.find(data.vlcHost);
             if (pc) {
                 if (data.pong === 'alive' && pc.vlcAlive === false) {
-                    pc.vlcAlive=true;
+                    pc.vlcAlive = true;
                     Home.message.publish('update', pc);
-                } else if (data.pong === 'dead' && pc.vlcAlive === true){
-                    pc.vlcAlive=false;
+                } else if (data.pong === 'dead' && pc.vlcAlive === true) {
+                    pc.vlcAlive = false;
                     Home.message.publish('update', pc);
                 }
             }
@@ -88,7 +94,7 @@ module.exports = {
                 if (cmd.command !== undefined) {
                     if (cmd.command === 'wake') {
                         host.wake();
-                    } else if (cmd.command=== 'shutdown') {
+                    } else if (cmd.command === 'shutdown') {
                         //DEBUG: console.log('PC SHUTDOWN COMMAND:'); console.log(host);
                         host.shutdown();
                     } else if (cmd.command === 'vlc') {

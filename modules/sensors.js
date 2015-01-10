@@ -1,16 +1,23 @@
 /*jslint todo: true */
 /*global Home */
-var i,sns;
-var list = require('../data/sensors.list.js'); 
-var updateInterval = 20 * 1000;
-if (Home.debug) { updateInterval = 5 * 60 * 1000; }
+var i, sns;
+var list = require('../data/sensors.list.js');
+var updateInterval = 2 * 1000;
+if (Home.debug) {
+    updateInterval = 5 * 60 * 1000;
+    console.log('Sensors updateinterval: '+ updateInterval);
+}
 var updateIODevices = [];
 
-for (i=0; i < list.length; i++){
+for (i = 0; i < list.length; i++) {
     sns = list[i];
-    if (sns.room !== undefined && sns.type !== undefined && sns.name !== undefined) { 
-        if (Home[sns.room] === undefined){ Home[sns.room] = {}; }
-        if (Home[sns.room][sns.type] === undefined){ Home[sns.room][sns.type] = {}; }
+    if (sns.room !== undefined && sns.type !== undefined && sns.name !== undefined) {
+        if (Home[sns.room] === undefined) {
+            Home[sns.room] = {};
+        }
+        if (Home[sns.room][sns.type] === undefined) {
+            Home[sns.room][sns.type] = {};
+        }
         Home[sns.room][sns.type][sns.name] = sns;
         if (updateIODevices.indexOf(sns.iodevice) === -1) {
             updateIODevices.push(sns.iodevice);
@@ -18,8 +25,8 @@ for (i=0; i < list.length; i++){
     }
 }
 
-setInterval(function(){
-    for(i=0; i<updateIODevices.length; i++) {
+setInterval(function() {
+    for (i = 0; i < updateIODevices.length; i++) {
         Home.message.publish('requeststatus', {
             to: updateIODevices[i],
             from: "logic"
@@ -27,8 +34,8 @@ setInterval(function(){
     }
 }, updateInterval);
 
-Home.loader.on('ready',function(){
-    Home.message.on('returnstatus', function(data){
+Home.loader.on('ready', function() {
+    Home.message.on('returnstatus', function(data) {
         Home.sensors.update(data);
     });
 });
