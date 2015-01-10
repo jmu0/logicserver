@@ -42,6 +42,10 @@ pc.prototype = {
             console.log('ERROR: class pc, ping, geen hostname');
         }
     },
+    isPlaying: false,
+    playingFile: undefined,
+    time: 0,
+    length: 0,
     startVlc: function() {
         vlcOnValue = false; 
         Home.message.publish('vlc', { 

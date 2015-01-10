@@ -47,6 +47,9 @@ Home.loader.on('ready', function(){
     Home.message.on('update', function(data){
         Home.ui.websocket.broadcast('update ' + JSON.stringify(data));
     });
+    Home.message.on('updateTime', function(data){
+        Home.ui.websocket.broadcast('updateTime ' + JSON.stringify(data));
+    });
     Home.message.on('broadcast', function(data) {
         if (typeof data === 'string') {
             Home.ui.websocket.broadcast(data);
