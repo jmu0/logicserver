@@ -70,6 +70,12 @@ pc.prototype = {
     vlcCommand: function(data) {
         //TODO: vlc command
         console.log('VLC COMMAND:'); console.log(data);
+    },
+    translatePath: function(text) {
+        this.translate.forEach(function(item) {
+            text.replace(item.from, item.to);
+        });
+        return text;
     }
 };
 

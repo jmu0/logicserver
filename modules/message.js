@@ -2,7 +2,6 @@
 /*global Home */
 
 module.exports = {
-    //TODO: implement filter???
     handlers: {},
     on: function(message, callback) {
         if (this.handlers[message] === undefined) {

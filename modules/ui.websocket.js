@@ -50,6 +50,12 @@ Home.loader.on('ready', function(){
     Home.message.on('updateTime', function(data){
         Home.ui.websocket.broadcast('updateTime ' + JSON.stringify(data));
     });
+    Home.message.on('updatePlaylist', function(data){
+        Home.ui.websocket.broadcast('updatePlaylist ' + JSON.stringify(data));
+    });
+    Home.message.on('updatePlayers', function(data){
+        Home.ui.websocket.broadcast('updatePlayers ' + JSON.stringify(data));
+    });
     Home.message.on('broadcast', function(data) {
         if (typeof data === 'string') {
             Home.ui.websocket.broadcast(data);
