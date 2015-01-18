@@ -1,7 +1,7 @@
 /*jslint todo: true */
 /*global Home */
 var getTimeInterval = 1000;
-if (Home.debug) { getTimeInterval = 5000; }
+if (Home.debug) { getTimeInterval = 10000; }
 
 var player = {
     playlist: [],
@@ -13,6 +13,7 @@ var player = {
         }
     },
     command: function(data) {
+        var i;
         if (Home.debug) {
             console.log("PLAYER:");
             console.log(data);
@@ -53,6 +54,36 @@ var player = {
                 vlc: 'clear'
             });
             Home.controllers.player.playlist = [];
+        } else if (data.command === 'removePlaylistItem') {
+            if (Home.debug) { console.log("remove playlist item:"); console.log(data); }
+            for(i=0; i< Home.controllers.player.playlist.length; i++) {
+                if (Home.controllers.player.playlist[i].filename === data.filename) {
+                    Home.controllers.player.playlist.splice(i,1);
+                    Home.message.publish('updatePlaylist', Home.controllers.player.playlist);
+                    break;
+                }
+            }
+        } else if (data.command === 'updatePlaylistItem') {
+            var oldhost;
+            if (Home.debug) { console.log("update playlist item:"); console.log(data); }
+            for(i=0; i< Home.controllers.player.playlist.length; i++) {
+                if (Home.controllers.player.playlist[i].filename === data.filename) {
+                    if (data.hostname !== undefined) {
+                        oldhost = Home.pc.find(Home.controllers.player.playlist[i].hostname);
+                        Home.controllers.player.playlist[i].hostname = data.hostname;
+                        if (oldhost) {
+                            if (oldhost.playingFile === data.filename) {
+                                Home.message.publish('vlc', {
+                                    hostname: oldhost.hostname,
+                                    vlc: 'stop'
+                                });
+                            }
+                        }
+                    }
+                    Home.message.publish('updatePlaylist', Home.controllers.player.playlist);
+                    break;
+                }
+            }
         } else {
             Home.message.publish('vlc', {
                 hostname: data.hostname,

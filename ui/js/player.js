@@ -21,15 +21,16 @@ Player.prototype = {
         }
         this.handlers[message].push(callback);
     },
-    publish: function(message, data){
-        console.log('Player publish message: '+message);console.log(data);
-        if (this.handlers[message] !== undefined){
-            this.handlers[message].forEach(function(handler){
+    publish: function(message, data) {
+        console.log('Player publish message: ' + message);
+        console.log(data);
+        if (this.handlers[message] !== undefined) {
+            this.handlers[message].forEach(function(handler) {
                 handler(data);
             });
         }
     },
-    playfile: function(data){
+    playfile: function(data) {
         data.command = 'playfile';
         this.socket.send('player ' + JSON.stringify(data));
         //TODO: play file now
@@ -71,7 +72,7 @@ Player.prototype = {
         this.socket.send('player ' + JSON.stringify(data));
     },
     clear: function(hostname) {
-        this.socket.send('player {"hostname":"'+hostname+'","command":"clear"}');
+        this.socket.send('player {"hostname":"' + hostname + '","command":"clear"}');
     },
     onoff: function(data) {
         var cmd = {
@@ -79,19 +80,30 @@ Player.prototype = {
         };
         if (data.isVlc === true) {
             cmd.command = 'vlc';
-            if (data.state==='true'){
+            if (data.state === 'true') {
                 cmd.vlc = 'kill';
             } else {
                 cmd.vlc = 'start';
             }
         } else {
-            if (data.state==='true'){
+            if (data.state === 'true') {
                 cmd.command = 'shutdown';
             } else {
                 cmd.command = 'wake';
             }
         }
         this.socket.send('pc ' + JSON.stringify(cmd));
+    },
+    removePlaylistItem: function(filename) {
+        var cmd = {
+            command: 'removePlaylistItem',
+            filename: filename
+        };
+        this.socket.send('player ' + JSON.stringify(cmd));
+    },
+    updatePlaylistItem: function(data) {
+        data.command = 'updatePlaylistItem';
+        this.socket.send('player ' + JSON.stringify(data));
     },
     socketUrl: "ws://domotica.muysers.nl:8080",
     socket: undefined,
@@ -112,21 +124,24 @@ Player.prototype = {
         this.publish(message, data);
     },
     socketConnect: function() {
-        var that=this;
+        var that = this;
         this.socket = new WebSocket(this.socketUrl);
         this.socket.onopen = function(evt) {
             that.socket.send('init {"iodevice":"player"}');
-            console.log('PLAYER SOCKET OPEN: '); console.log(evt);
+            console.log('PLAYER SOCKET OPEN: ');
+            console.log(evt);
             m.ui.status('player socket connected');
         };
         this.socket.onclose = function(evt) {
-            console.log('PLAYER SOCKET CLOSE: '); console.log(evt);
+            console.log('PLAYER SOCKET CLOSE: ');
+            console.log(evt);
         };
         this.socket.onmessage = function(evt) {
             that.socketMessage(evt);
         };
         this.socket.onerror = function(evt) {
-            console.log('PLAYER SOCKET ERROR: '); console.log(evt);
+            console.log('PLAYER SOCKET ERROR: ');
+            console.log(evt);
         };
         this.socketTestInterval = setInterval(function() {
             if (that.socket.readyState === 3) {
