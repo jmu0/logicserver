@@ -70,6 +70,29 @@ Player.prototype = {
         data.command = 'seek';
         this.socket.send('player ' + JSON.stringify(data));
     },
+    clear: function(hostname) {
+        this.socket.send('player {"hostname":"'+hostname+'","command":"clear"}');
+    },
+    onoff: function(data) {
+        var cmd = {
+            hostname: data.hostname
+        };
+        if (data.isVlc === true) {
+            cmd.command = 'vlc';
+            if (data.state==='true'){
+                cmd.vlc = 'kill';
+            } else {
+                cmd.vlc = 'start';
+            }
+        } else {
+            if (data.state==='true'){
+                cmd.command = 'shutdown';
+            } else {
+                cmd.command = 'wake';
+            }
+        }
+        this.socket.send('pc ' + JSON.stringify(cmd));
+    },
     socketUrl: "ws://domotica.muysers.nl:8080",
     socket: undefined,
     socketMessage: function(evt) {

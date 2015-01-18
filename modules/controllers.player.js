@@ -47,6 +47,12 @@ var player = {
             Home.controllers.player.playNext(data.hostname);
         } else if (data.command === 'seek') {
             Home.controllers.player.seek(data);
+        } else if (data.command === 'clear') {
+            Home.message.publish('vlc', {
+                hostname: data.hostname,
+                vlc: 'clear'
+            });
+            Home.controllers.player.playlist = [];
         } else {
             Home.message.publish('vlc', {
                 hostname: data.hostname,
@@ -216,7 +222,7 @@ var player = {
             if (pc.playingFile) {
                 var file = Home.controllers.player.findFilename(pc.playingFile);
                 if (file) {
-                    if (parseInt(file.time,10) >= parseInt(data.time,10)) { //resume last position
+                    if (parseInt(file.time,10) >= parseInt(data.time,10)+2) { //resume last position
                         console.log("file time " + file.time + " > " + data.time + ", resuming...");
                         pc.time = file.time;
                         Home.message.publish('vlc', {
@@ -285,6 +291,7 @@ var player = {
                             vlc: "time"
                         });
                     }, getTimeInterval);
+                    Home.message.publish('updatePlayers',Home.pc.list);
                 }
                 if (pc.length <= 0) {
                     Home.message.publish('vlc', {
@@ -295,9 +302,13 @@ var player = {
             } else {
                 if (pc.isPlaying === true) {
                     pc.isPlaying = false;
+                    pc.playingFile = undefined; 
+                    pc.time = 0;
+                    pc.length = 0;
                     if (Home.controllers.player.getTimeInterval[pc.hostname]) {
                         clearInterval(Home.controllers.player.getTimeInterval[pc.hostname]);
                     }
+                    Home.message.publish('updatePlayers',Home.pc.list);
                 }
                 Home.controllers.player.playNext(pc.hostname);
             }

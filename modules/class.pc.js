@@ -56,6 +56,10 @@ pc.prototype = {
     },
     killVlc: function() {
         vlcOnValue = false; 
+        this.isPlaying = false;
+        this.playingFile = undefined;
+        this.time = 0;
+        this.length = 0; 
         Home.message.publish('vlc', { 
             hostname: this.hostname,
             vlcKillCommand: this.vlcKillCommand,
@@ -72,8 +76,11 @@ pc.prototype = {
         console.log('VLC COMMAND:'); console.log(data);
     },
     translatePath: function(text) {
+        if (Home.debug) { console.log('translating ' + text + ' for ' + this.hostname); }
         this.translate.forEach(function(item) {
-            text.replace(item.from, item.to);
+            //DEBUG:
+            console.log(item);
+            text = text.replace(item.from, item.to);
         });
         return text;
     }
