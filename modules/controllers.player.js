@@ -92,16 +92,53 @@ var player = {
         }
     },
     getNext: function(hostname) {
-        var file, i;
-        for (i=0; i < this.playlist.length; i++) {
-            if (this.playlist[i].played === 0 && this.playlist[i].hostname === hostname) {
-                file= this.playlist[i];
+        var file, fileindex, i, n;
+        var pc = Home.pc.find(hostname);
+        var startindex = 0;
+        if (pc !== undefined && pc.lastPlayedFile !== undefined) {
+            fileindex = Home.controllers.player.findFilenameIndex(pc.lastPlayedFile);
+            if (fileindex !== undefined) {
+                startindex = fileindex + 1;
+                if (startindex >= this.playlist.length) { startindex -= this.playlist.length; }
+            }
+        }
+        if (Home.debug) { console.log('GETNEXT (startindex): '+startindex); }
+        for (i = startindex; i < (this.playlist.length + startindex); i++) {
+            n=i;
+            if (n >= this.playlist.length) { n -= this.playlist.length; }
+            if (this.playlist[n].hostname === hostname) {
+                file = this.playlist[n];
+                if (Home.debug) { console.log('GETNEXT file:' + file.filename); }
                 break;
             }
         }
         return file;
     },
     getPrevious: function(hostname) {
+        var file, fileindex, i, n;
+        var pc = Home.pc.find(hostname);
+        var startindex = 0;//this.playlist.length -1;
+        if (pc !== undefined && pc.lastPlayedFile !== undefined) {
+            if (Home.debug) { console.log('GETPREVIOUS: last played file: '+pc.lastPlayedFile); }
+            fileindex = Home.controllers.player.findFilenameIndex(pc.lastPlayedFile);
+            if (Home.debug) { console.log('GETPREVIOUS: gevonden fileindex:'+fileindex); }
+            if (fileindex !== undefined) {
+                startindex = fileindex - 1;
+                if (startindex < 0) { startindex = this.playlist.length + startindex; }
+            }
+        }
+        if (Home.debug) { console.log('GETPREVIOUS startindex: '+startindex); }
+        for (i = startindex; i > (startindex - this.playlist.length); i--) {
+            n=i;
+            if (n < 0) { n = this.playlist.length + n; }
+            if (this.playlist[n].hostname === hostname) {
+                file = this.playlist[n];
+                if (Home.debug) { console.log('GETPREVIOUS file:' + file.filename); }
+                break;
+            }
+        }
+        return file;
+        /*
         var file, i;
         var pc = Home.pc.find(hostname);
         if (pc !== undefined) {
@@ -125,6 +162,7 @@ var player = {
             }
         }
         return file;
+        */
     },
     playNext: function(hostname) {
         //first incr. playcount then get next file
@@ -141,6 +179,7 @@ var player = {
             if (nextfile !== undefined) {
                 if (Home.debug) { console.log('next file is: '+ nextfile.filename); }
                 pc.playingFile = nextfile.filename;
+                pc.lastPlayedFile = nextfile.filename;
                 Home.message.publish('vlc', {
                     hostname: pc.hostname,
                     vlc: 'play',
@@ -168,6 +207,7 @@ var player = {
             if (prevfile !== undefined) {
                 if (Home.debug) { console.log('previous file is: '+prevfile.filename); }
                 pc.playingFile = prevfile.filename;
+                pc.lastPlayedFile = prevfile.filename;
                 Home.message.publish('vlc', {
                     hostname: pc.hostname,
                     vlc: 'play',
@@ -221,7 +261,7 @@ var player = {
             //DEBUG: console.log(filename + " = " + this.playlist[i].filename);
             if (this.playlist[i].filename === filename) {
                 ret = i;
-                console.log("FOUND:"+i);
+                if (Home.debug) { console.log("FOUND:"+i); }
                 break;
             }
         }

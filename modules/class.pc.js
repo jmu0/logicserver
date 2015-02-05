@@ -44,6 +44,7 @@ pc.prototype = {
     },
     isPlaying: false,
     playingFile: undefined,
+    lastPlayedFile: undefined,
     time: 0,
     length: 0,
     startVlc: function() {
