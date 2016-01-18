@@ -2,8 +2,8 @@
 /*global Home */
 
 var gewenst; //override gewenste temperatuur
-// var checkInterval = 5 * 1000 * 60; //interval waartussen gechecked wordt
-var checkInterval = 1500;
+var checkInterval = 5 * 1000 * 60; //interval waartussen gechecked wordt
+//DEBUG:var checkInterval = 1500;
 var interval; //wordt ingesteld met setinterval
 var lastTemp; //vorige gemeten temp
 var trend = 'const';
@@ -84,7 +84,7 @@ var check = function() {
     var gemeten = getGemeten();
     var verschil = gemeten - gewenst;
     var now = new Date();
-    var line = now.toLocaleString();
+    var line = now.toDateString() + " " + now.toLocaleTimeString();
     line += "," + gewenst;
     line += "," + gemeten;
     line += "," + trend;
@@ -111,7 +111,7 @@ var check = function() {
     }
     line += "\n";
     fs.appendFile(logfile, line);
-    console.log(line);
+    if (Home.debug) { console.log(line); }
 };
 
 Home.loader.on('ready', function(){
