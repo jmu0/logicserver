@@ -52,9 +52,13 @@ module.exports = {
     film: function() {
         Home.controls.setControl(Home.kamer.verlichting.plafond1, 'off');
         Home.controls.setControl(Home.kamer.verlichting.plafond2, 'off');
-        Home.controls.setControl(Home.kamer.verlichting.spot1, '6');
-        Home.controls.setControl(Home.kamer.verlichting.staand, '1');
+        Home.controls.setControl(Home.kamer.verlichting.spot1, '9');
+        Home.controls.setControl(Home.kamer.verlichting.staand, '5');
         Home.controls.setControl(Home.keuken.verlichting.plafond1, 'off');
+        Home.pc.doCommand({
+            hostname: "htpc1",
+            command: "wake"
+        });
     },
     slapen: function() {
         //verlichting

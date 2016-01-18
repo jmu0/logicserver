@@ -20,6 +20,7 @@ function event(e) {
     if (e.ioevent) {
         this.ioevent = e.ioevent;
     }
+    this.handlers = [];
 }
 event.prototype = {
     room: undefined,
@@ -27,16 +28,24 @@ event.prototype = {
     name: undefined,
     iodevice: undefined,
     ioevent: undefined,
-    handlers: [],
     trigger: function() {
         /** trigger all event handlers */
+        if (Home.debug) {
+            console.log("triggering event:"); console.log(this);
+        }
         for (i = 0; i < this.handlers.length; i++) {
+            if (Home.debug) { console.log("handler "+i);}
             this.handlers[i]();
         }
     },
     addHandler: function(fn) {
         /** add event handler */
         this.handlers.push(fn);
+        if (Home.debug) {
+            console.log('adding handler to:');
+            console.log(this);
+            console.log(this.handlers.length + ' handlers');
+        }
     }
 };
 
@@ -56,8 +65,14 @@ for (i = 0; i < list.length; i++) {
 
 Home.loader.on('ready', function() {
     Home.message.on('event', function(data) {
+        if (Home.debug) { console.log("checking event:"); console.log(data);}
         Home.events.list.forEach(function(event) {
+            if (Home.debug) { console.log(event);}
             if (data.iodevice === event.iodevice && data.ioevent === event.ioevent) {
+                if (Home.debug) {
+                    console.log('found:');
+                    console.log(event);
+                }
                 event.trigger();
             }
         });
@@ -87,6 +102,7 @@ module.exports = {
         var ret;
         for (i = 0; i < this.list.length; i++) {
             if (this.list[i].name === name) {
+                // console.log('findByName: '+this.list[i].name +" = " +name);
                 ret = this.list[i];
             }
         }

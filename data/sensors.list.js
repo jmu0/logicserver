@@ -7,7 +7,8 @@ module.exports = [
         iodevice: 'arduino01',
         iocontrol: 'an4',
         set: function(value) {
-            var refVoltage = 4750.0;
+            //var refVoltage = 4750.0;
+            var refVoltage = 4960.0;
             this.raw = value;
             var voltage = (value * (refVoltage / 1024.0));
             this.value = Math.round((voltage - 500.0) / 10.0);

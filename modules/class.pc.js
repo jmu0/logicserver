@@ -45,6 +45,7 @@ pc.prototype = {
     isPlaying: false,
     playingFile: undefined,
     lastPlayedFile: undefined,
+    skipCheckPlayer: false, //if starting play takes longer then checkPlayerInterval
     time: 0,
     length: 0,
     startVlc: function() {

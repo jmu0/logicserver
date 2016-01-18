@@ -3,8 +3,8 @@
 
 //TODO: split controllers into seperate files?
 
-//CONTROLLER: beweging in de kamer
 Home.loader.on('ready', function(){
+    //Beweging in de kamer
     var time = 2 * 60 * 1000;
     var timeout;
     var threshold = 10;
@@ -32,6 +32,37 @@ Home.loader.on('ready', function(){
                 console.log('CONTROLLER: oude waarden terugzetten');
                 Home.controls.setControl(Home.kamer.verlichting.plafond1, orig.plafond1);
                 Home.controls.setControl(Home.kamer.verlichting.plafond2, orig.plafond2);
+                aangezet = false;
+            }
+        }, time);
+    });
+});
+
+Home.loader.on('ready', function(){
+    //Beweging in de keuken
+    var time = 2 * 60 * 1000;
+    var timeout;
+    var threshold = 50;
+    var aangezet = false; 
+    var orig = {
+        aanrecht: Home.keuken.verlichting.aanrecht.value
+    };
+    Home.events.on('beweging in de keuken', function() {
+        if (Home.debug) { console.log('BEWEGING IN DE KEUKEN!'); }
+        if(Home.kamer.sensors.licht.value < threshold) {
+            if (aangezet === false) {
+                orig.aanrecht = Home.keuken.verlichting.aanrecht.value;
+            }
+            console.log('CONTROLLER: beweging in de keuken > te donker > licht aan');
+            Home.controls.setControl(Home.keuken.verlichting.aanrecht, '16');
+            aangezet = true;
+        }
+        if (Home.debug){console.log(orig);}
+        clearTimeout(timeout);
+        timeout = setTimeout(function() {
+            if (aangezet) {
+                console.log('CONTROLLER: oude waarden terugzetten');
+                Home.controls.setControl(Home.keuken.verlichting.aanrecht, orig.aanrecht);
                 aangezet = false;
             }
         }, time);

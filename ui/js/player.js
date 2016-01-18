@@ -22,8 +22,8 @@ Player.prototype = {
         this.handlers[message].push(callback);
     },
     publish: function(message, data) {
-        console.log('Player publish message: ' + message);
-        console.log(data);
+        //console.log('Player publish message: ' + message);
+        //console.log(data);
         if (this.handlers[message] !== undefined) {
             this.handlers[message].forEach(function(handler) {
                 handler(data);

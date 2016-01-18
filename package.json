@@ -1,9 +1,10 @@
 {
-    "name": "logicserver",
-    "description": "Logic server",
-    "version": "0.1.0",
-    "private": true,
-    "dependencies": {
-        "ws": ">0.1.0"
-    }
+  "name": "logicserver",
+  "description": "Logic server",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "http-proxy": "^1.12.0",
+    "ws": ">0.1.0"
+  }
 }

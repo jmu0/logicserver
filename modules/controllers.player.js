@@ -7,10 +7,12 @@ var player = {
     playlist: [],
     init: function(data){
         //initialize player on websocket
+        /*
         if (data.iodevice === 'player') { 
             Home.message.publish('updatePlayers',Home.pc.list);
             Home.message.publish('updatePlaylist',Home.controllers.player.playlist);
         }
+        */
     },
     command: function(data) {
         var i;
@@ -180,6 +182,7 @@ var player = {
                 if (Home.debug) { console.log('next file is: '+ nextfile.filename); }
                 pc.playingFile = nextfile.filename;
                 pc.lastPlayedFile = nextfile.filename;
+                pc.skipCheckPlayer = true; 
                 Home.message.publish('vlc', {
                     hostname: pc.hostname,
                     vlc: 'play',
@@ -273,11 +276,13 @@ var player = {
             console.log('checking players...');
         }
         Home.pc.list.forEach(function(pc) {
-            if (pc.vlcAlive) {
+            if (pc.vlcAlive && pc.skipCheckPlayer === false) {
                 Home.message.publish('vlc', {
                     hostname: pc.hostname,
                     vlc: 'playing'
                 });
+            } else {
+                pc.skipCheckPlayer = false;
             }
         });
     },

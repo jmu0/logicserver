@@ -2,6 +2,8 @@
 /*global Home */
 var http = require('http');
 var fs = require('fs');
+var httpProxy = require('http-proxy');
+var proxy = httpProxy.createProxyServer({});
 
 function parseUrl(url) {
     var split=url.split('/');
@@ -81,7 +83,12 @@ http.createServer(function(req,res) {
                 res.end(path+' bestaat niet');
             }
         });
-    /*TODO: de volgende commando's gaan via websocket
+    } else if (query.command === "ui"){
+        proxy.web(req, res, { target: 'http://www.muysers.nl' });
+    }
+}).listen(8888);
+console.log('http server listening on port 8888');
+/*TODO: de volgende commando's gaan via websocket
     }else if (query.command === 'setcontrol'){
         Home.ioclient.write('setcontrol ' + query.iodevice + " " + query.value);
         res.writeHead(200, { 'Content-Type': 'text/html'});
@@ -103,9 +110,6 @@ http.createServer(function(req,res) {
         res.writeHead(200, { 'Content-Type': 'text/html'});
         res.end(JSON.stringify(query));
     */
-    }
-}).listen(8888);
-console.log('http server listening on port 8888');
 /* IPTABLES:
  * sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8888
  */
