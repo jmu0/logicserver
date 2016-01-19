@@ -11,7 +11,7 @@ var logfile = '/var/log/temp.kamer.log';
 var fs = require('fs');
 
 var getGewenst = function() {
-    var laag = 15; //temperatuur laag
+    var laag = 12; //temperatuur laag
     var hoog = 21; //temperatuur hoog
     //TODO: get gewenste temperatuur uit scheduler
     var now = new Date();
