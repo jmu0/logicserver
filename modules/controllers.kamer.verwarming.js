@@ -12,7 +12,7 @@ var fs = require('fs');
 
 var getGewenst = function() {
     var laag = 12; //temperatuur laag
-    var hoog = 21; //temperatuur hoog
+    var hoog = 22; //temperatuur hoog
     //TODO: get gewenste temperatuur uit scheduler
     var now = new Date();
     var dow = now.getDay();
@@ -82,36 +82,38 @@ var setVerwarming = function(level) {
 var check = function() {
     var gewenst = getGewenst();
     var gemeten = getGemeten();
-    var verschil = gemeten - gewenst;
-    var now = new Date();
-    var line = now.toDateString() + " " + now.toLocaleTimeString();
-    line += "," + gewenst;
-    line += "," + gemeten;
-    line += "," + trend;
-    if (verschil < -2) {
-        setVerwarming(3);
-        line += ",3";
-    } else if (verschil <= 2 && verschil >= -2) {
-        switch(trend){
-            case "stijgend":
-                setVerwarming(0);
-                line += ",0";
-                break;
-            case "dalend":
-                setVerwarming(2);
-                line += ",2";
-                break;
-            default:
-                setVerwarming(1);
-                line += ",1";
+    if (gemeten) {
+        var verschil = gemeten - gewenst;
+        var now = new Date();
+        var line = now.toDateString() + " " + now.toLocaleTimeString();
+        line += "," + gewenst;
+        line += "," + gemeten;
+        line += "," + trend;
+        if (verschil < -1) {
+            setVerwarming(3);
+            line += ",3";
+        } else if (verschil <= 1 && verschil >= -1) {
+            switch(trend){
+                case "stijgend":
+                    setVerwarming(0);
+                    line += ",0";
+                    break;
+                case "dalend":
+                    setVerwarming(2);
+                    line += ",2";
+                    break;
+                default:
+                    setVerwarming(1);
+                    line += ",1";
+            }
+        } else { 
+            setVerwarming(0);
+            line += ",0";
         }
-    } else { 
-        setVerwarming(0);
-        line += ",0";
+        line += "\n";
+        fs.appendFile(logfile, line);
+        if (Home.debug) { console.log(line); }
     }
-    line += "\n";
-    fs.appendFile(logfile, line);
-    if (Home.debug) { console.log(line); }
 };
 
 Home.loader.on('ready', function(){
