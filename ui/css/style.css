@@ -1,0 +1,35 @@
+div#br {
+    border-radius: 5px;
+    margin: 10px 0px 10px 0px;
+    padding: 0px;
+    width: 350px;
+    height: 325px;
+    background-image: url("https://api.buienradar.nl/image/1.0/lightningnl/?ext=png&l=2&nt=1&hist=11&forc=1&step=0&ak=d5c0c1bbeffb40b0a1e64687c836dae4&w=350&h=325");
+    background-repeat: no-repeat;
+    background-position: 0px 0px;
+}
+h3#weer {
+    color: darkslategrey;
+    text-align: left;
+    max-width: 350px;
+}
+h3#weer img {
+    height: 40px;
+    margin-bottom: -8px;
+}
+table#weer {
+    min-width: 350px;
+}
+table#weer tr.Zondag td {
+    border-bottom: 1px solid grey;
+}
+table#weer td {
+    border-top: none !important;
+    margin: 0px;
+    padding: 0px;
+    font-size: 0.8em;
+}
+table#weer td img {
+    height: 35px;
+    margin: -5px;
+}

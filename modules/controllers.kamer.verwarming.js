@@ -12,7 +12,7 @@ var fs = require('fs');
 
 var getGewenst = function() {
     var laag = 12; //temperatuur laag
-    var hoog = 22; //temperatuur hoog
+    var hoog = 23; //temperatuur hoog
     //TODO: get gewenste temperatuur uit scheduler
     var now = new Date();
     var dow = now.getDay();

@@ -40,13 +40,18 @@ module.exports = [{
     "room": "kamer",
     "alive": false,
     "vlcAlive": false,
-    "discription": "macbook air van jos",
-    "vlcStartCommand": "export DISPLAY=:0.0; /Applications/VLC.app/Contents/MacOS/VLC --aspect-ratio=16:9 --fullscreen --extraintf=rc --rc-host=josmac:9876",
-    "vlcKillCommand": "killall -9 VLC",
-    "shutdownCommand": "sudo shutdown -h now",
-    "mac": "98:fe:94:43:e5:a6",
-    "translate": [{
-        "from": "/home/jos",
-        "to": "/Users/jos/mediaserver"
-    }]
+    "discription": "macbook air van jos (ubuntu)",
+    "vlcStartCommand": "export DISPLAY=:0.0; /usr/bin/vlc --aspect-ratio 16:9 --fullscreen --extraintf rc --rc-host josmac:9876",
+    "vlcKillCommand": "killall vlc",
+    "shutdownCommand": "sudo shutdown -hP now",
+    "translate": [],
+    "mac": "98:fe:94:43:e5:a6"
+    // "discription": "macbook air van jos (osx)",
+    // "vlcStartCommand": "export DISPLAY=:0.0; /Applications/VLC.app/Contents/MacOS/VLC --aspect-ratio=16:9 --fullscreen --extraintf=rc --rc-host=josmac:9876",
+    // "vlcKillCommand": "killall -9 VLC",
+    // "shutdownCommand": "sudo shutdown -h now",
+    // "translate": [{
+    //     "from": "/home/jos",
+    //     "to": "/Users/jos/mediaserver"
+    // }]
 }];
