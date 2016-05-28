@@ -1,119 +1,119 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="icon" href="file/favicon.ico" type="image/vnd.microsoft.icon">
-        <title>Domotica UI</title>
-        <link rel="stylesheet" type="text/css" href="http://domotica.muysers.nl/ui/nieuw/includes/ui.css">
-        <link rel="stylesheet" type="text/css" href="file/css/style.css">
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="file/favicon.ico" type="image/vnd.microsoft.icon">
+    <title>Domotica UI</title>
+    <link rel="stylesheet" type="text/css" href="http://domotica.muysers.nl/ui/nieuw/includes/ui.css">
+    <link rel="stylesheet" type="text/css" href="file/css/style.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-        <style>
-            button.vlcbutton,
-            button,
-            pcbutton {
-                width: 100px;
-            }
-        </style>
+    <style>
+        button.vlcbutton,
+        button,
+        pcbutton {
+            width: 100px;
+        }
+    </style>
 
-    </head>
+</head>
 
-    <body>
-        <header>
-            <span class='title'>Domotica</span>
-            <nav>
-                <button class='toggle visible-sm'><i class='fa fa-bars'></i>
-                </button>
-                <ul class='hidden-sm'>
-                    <li><a href='#' onclick='m.ui.show("home")' class='een'><i class='fa fa-home'></i>Home</a>
-                    </li>
-                    <li><a href='#' onclick='m.ui.show("controls")' class='een'><i class='fa fa-gear'></i>Controls / Sensors</a>
-                    </li>
-                    <li><a href='#' onclick='m.ui.show("controllers")' class='een'><i class='fa fa-tachometer'></i>Controllers</a>
-                    </li>
-                    <li><a href='#' onclick='m.ui.show("state")' class='een'><i class='fa fa-check'></i>State</a>
-                    </li>
-                    <li><a href='#' onclick='m.ui.show("logs")' class='een'><i class='fa fa-file-o'></i>Logs</a>
-                    </li>
-                </ul>
-            </nav>
-        </header>
-        <div class='wrapper'>
-            <div class='content page home full-width'>
-                <div class=row>
-                    <div class=col50>
-                        <h2>Binnen</h2>
-                        <!-- status weergeven<br><br> -->
-                        <!--  -->
-                        <!-- apparaten= controls (lamp) sensors(temperatuur)<br> -->
-                        <!-- events= (beweging)<br> -->
-                        <!-- controllers (thermostaat)<br> -->
-                        <!--  -->
-                        <!-- aktiviteiten/staat? -->
-                        <!-- aktiviteiten brengen een ruimte in een bepaalde toestand (bv.film kijken)<br> -->
-                        <!--  -->
-                        <!-- aktiviteiten planner (opstaan,werken,tussendemiddag,thuiskomen,avond,slapen);<br> -->
-                    </div>
-                    <div class='col50'>
-                        <h2>Buiten</h2>
-                        <a href="http://buienradar.nl/bliksem-1-uur" target="_blank">
-                            <div id=br></div>
-                        </a>
-                        <h3 id=weer></h3>
-                        <table id=weer>
-                            <thead>
-                                <th class=header colspan=2>Dag</th>
-                                <th class=header>Temp.</th>
-                                <th class=header colspan=2>Neerslag</th>
-                                <th class=header colspan=2>Wind</th>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                    </div>
-                    <!--huis-->
-                    <div class='content page full-width controls'>
-                        <h2>Controls / Sensors</h2>
-                        <button onclick="Home.resetControls()" class='pull-right' style='margin: -20px 5px 5px'>Reset</button>
-                        <div id='controls'></div>
-                    </div>
-                    <!--apparaten-->
-                    <div class='content page full-width controllers'>
-                        <h2>Controllers</h2>
-                        <div id='controllers'></div>
-                    </div>
-                    <!--apparaten-->
-                    <div class='content page full-width state'>
-                        <h2>State</h2>
-                        <div id='state'></div>
-                    </div>
-                    <!--state-->
-                    <div class='content page full-width logs'>
-                        <h2>Logs</h2>
-                        <div id='logs'></div>
-                    </div>
-                    <!--state-->
+<body>
+    <header>
+        <span class='title'>Domotica</span>
+        <nav>
+            <button class='toggle visible-sm'><i class='fa fa-bars'></i>
+            </button>
+            <ul class='hidden-sm'>
+                <li><a href='#' onclick='m.ui.show("home")' class='een'><i class='fa fa-home'></i>Home</a>
+                </li>
+                <li><a href='#' onclick='m.ui.show("controls")' class='een'><i class='fa fa-gear'></i>Controls / Sensors</a>
+                </li>
+                <li><a href='#' onclick='m.ui.show("controllers")' class='een'><i class='fa fa-tachometer'></i>Controllers</a>
+                </li>
+                <li><a href='#' onclick='m.ui.show("state")' class='een'><i class='fa fa-check'></i>State</a>
+                </li>
+                <li><a href='#' onclick='m.ui.show("logs")' class='een'><i class='fa fa-file-o'></i>Logs</a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    <div class='wrapper'>
+        <div class='content page home full-width'>
+            <div class=row>
+                <div class=col50>
+                    <h2>Binnen</h2>
+                    <!-- status weergeven<br><br> -->
+                    <!--  -->
+                    <!-- apparaten= controls (lamp) sensors(temperatuur)<br> -->
+                    <!-- events= (beweging)<br> -->
+                    <!-- controllers (thermostaat)<br> -->
+                    <!--  -->
+                    <!-- aktiviteiten/staat? -->
+                    <!-- aktiviteiten brengen een ruimte in een bepaalde toestand (bv.film kijken)<br> -->
+                    <!--  -->
+                    <!-- aktiviteiten planner (opstaan,werken,tussendemiddag,thuiskomen,avond,slapen);<br> -->
+                </div>
+                <div class='col50'>
+                    <h2>Buiten</h2>
+                    <a href="http://buienradar.nl/bliksem-1-uur" target="_blank">
+                        <div id=br></div>
+                    </a>
+                    <h3 id=weer></h3>
+                    <table id=weer>
+                        <thead>
+                            <th class=header colspan=2>Dag</th>
+                            <th class=header>Temp.</th>
+                            <th class=header colspan=2>Neerslag</th>
+                            <th class=header colspan=2>Wind</th>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
                 </div>
             </div>
         </div>
-        <!--content wrapper-->
-        <footer>
-            <span class='status'></span>
-        </footer>
-    </body>
-    <script src='http://www.muysers.nl/ui/nieuw/includes/ui.js'></script>
-    <script src='file/js/logicserver-ui.js'></script>
-    <script src='file/js/buienradar.js'></script>
-    <script>
-        $(function()
-          {
-              Home.init();
-          });
-    </script>
+        <!--huis-->
+        <div class='content page full-width controls'>
+            <h2>Controls / Sensors</h2>
+            <button onclick="Home.resetControls()" class='pull-right' style='margin: -20px 5px 5px'>Reset</button>
+            <div id='controls'></div>
+        </div>
+        <!--apparaten-->
+        <div class='content page full-width controllers'>
+            <h2>Controllers</h2>
+            <div id='controllers'></div>
+        </div>
+        <!--apparaten-->
+        <div class='content page full-width state'>
+            <h2>State</h2>
+            <div id='state'></div>
+        </div>
+        <!--state-->
+        <div class='content page full-width logs'>
+            <h2>Logs</h2>
+            <div id='logs'></div>
+        </div>
+        <!--state-->
+    </div>
+    <!--content wrapper-->
+    <footer>
+        <span class='status'></span>
+    </footer>
+</body>
+<script src='http://www.muysers.nl/ui/nieuw/includes/ui.js'></script>
+<script src='file/js/logicserver-ui.js'></script>
+<script src='file/js/buienradar.js'></script>
+<script>
+    $(function()
+    {
+        Home.init();
+    });
+</script>
 
 </html>
